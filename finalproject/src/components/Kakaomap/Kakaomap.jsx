@@ -42,20 +42,22 @@ function KakaoMap(props) {
     }
 
     const rect = "126.1240,33.17606,126.9900,33.58313";
-
-    const response = [];
+    // 한번에 보여줄 개수
+    const pageLimit = 7;
+    // 보여줄 페이지
+    const pageNumbewr = 1;
 
     axios
       .get(
-        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${inputPlace}&rect=${rect}`,
+        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${inputPlace}&rect=${rect}&size=${pageLimit}&page=${pageNumbewr}`,
         {
           headers: {
             Authorization: `KakaoAK 5357f44dd713ad518dcc5ef6d3bfbc66`,
           },
         }
       )
-      .then((data) => {
-        console.log(data);
+      .then((response) => {
+        console.log(response.data);
       });
 
     ps.keywordSearch(keyword, placesSearchCB);
@@ -139,28 +141,7 @@ function KakaoMap(props) {
       >
         <ZoomControl position={"RIGHT"} />
       </Map>
-      <button
-        onClick={() =>
-          setDefaultLocation({
-            center: { lat: 33.3606281, lng: 126.5358345 },
-            isPanto: true,
-            level: 10,
-          })
-        }
-      >
-        지도 중심좌표 이동시키기
-      </button>{" "}
-      <button
-        onClick={() =>
-          setDefaultLocation({
-            center: { lat: 33.5070772, lng: 126.4934311 },
-            isPanto: true,
-            level: 3,
-          })
-        }
-      >
-        지도 중심좌표 부드럽게 이동시키기
-      </button>
+      <div></div>
     </>
   );
 }
