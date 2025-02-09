@@ -1,27 +1,19 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Map,
   MapTypeControl,
   ZoomControl,
   useKakaoLoader,
 } from "react-kakao-maps-sdk";
+import { searchPlaces } from "./kakaoFunction/SearchPlaces";
+import { loadMore } from "./kakaoFunction/LoadMore";
+import { placesSearchCB } from "./kakaoFunction/PlaceSearchCB";
 
-function KakaoMap(props) {
+function KakaoMap() {
   useKakaoLoader();
   // 카카오 지도 SDK가 로드된 후 사용할 장소 검색 객체 생성
   const ps = new window.kakao.maps.services.Places();
-
-  // 마커 클릭 시 장소명을 표출할 인포윈도우 생성
-  const infowindow = new window.kakao.maps.InfoWindow({ zIndex: 1 });
-
-  // <Map> 컴포넌트에서 반환되는 실제 지도 인스턴스를 저장할 state
-  const [mapInstance, setMapInstance] = useState(null);
-
-  // 사용자가 입력한 검색어 state
-  const [inputPlace, setInputPlace] = useState("");
-
-  const [clickPlace, setClickPlace] = useState("");
 
   // 지도의 기본 설정 state
   const [defaultLocation, setDefaultLocation] = useState({
@@ -30,53 +22,85 @@ function KakaoMap(props) {
     level: 10,
   });
 
+  // 마커 클릭 시 장소명을 표출할 인포윈도우 생성
+  const infowindowRef = useRef(null);
+  if (!infowindowRef.current) {
+    infowindowRef.current = new window.kakao.maps.InfoWindow({ zIndex: 1 });
+  }
+
+  // 마커관리 Ref
+  const markersRef = useRef([]);
+
+  // 마커의 infowindow관리
+  let currentInfoWindow = null;
+
+  // <Map> 컴포넌트에서 반환되는 실제 지도 인스턴스를 저장할 state
+  const [mapInstance, setMapInstance] = useState(null);
+
+  // 사용자가 입력한 검색어 state
+  const [inputPlace, setInputPlace] = useState("");
+
+  // 사용자가 검색어를 입력했을 때, 보여줄 항목의 수
+  const [visiblePlaceCount, setVisiblePlaceCount] = useState(10);
+
+  // 클릭한 장소 state
+  const [clickPlace, setClickPlace] = useState("");
+
+  // 전체 검색 결과를 저장할 상태
+  const [results, setResults] = useState([]);
+
+  // 현재 페이지 번호 (최초 1페이지)
+  const [pageNumber, setPageNumber] = useState(1);
+
+  // 마지막 페이지 여부 (추가 요청이 가능한지 여부)
+  const [isEnd, setIsEnd] = useState(false);
+
   // 검색 폼 제출 시 호출되는 함수
-  const searchPlaces = (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
-    const keyword = inputPlace;
-    console.log("검색어:", keyword);
-
-    if (!keyword.replace(/^\s+|\s+$/g, "")) {
-      alert("검색어를 입력해주세요");
-      return;
-    }
-
-    const rect = "126.1240,33.17606,126.9900,33.58313";
-
-    const response = [];
-
-    axios
-      .get(
-        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${inputPlace}&rect=${rect}`,
-        {
-          headers: {
-            Authorization: `KakaoAK 5357f44dd713ad518dcc5ef6d3bfbc66`,
-          },
-        }
-      )
-      .then((data) => {
-        console.log(data);
-      });
-
-    ps.keywordSearch(keyword, placesSearchCB);
+    searchPlaces({
+      e,
+      inputPlace,
+      setResults,
+      setPageNumber,
+      setIsEnd,
+      setVisiblePlaceCount,
+      clearMarkers,
+      infowindowRef,
+      ps,
+      displayMarker,
+      // 검색 결과를 처리하는 콜백 함수
+      placesSearchCB,
+      // 콜백함수를 위한 추가 State 전달
+      mapInstance,
+    });
   };
 
-  // 검색 결과를 처리하는 콜백 함수
-  const placesSearchCB = (data, status, pagination) => {
-    if (status === window.kakao.maps.services.Status.OK) {
-      const bounds = new window.kakao.maps.LatLngBounds();
-
-      for (let i = 0; i < data.length; i++) {
-        displayMarker(data[i]);
-        bounds.extend(new window.kakao.maps.LatLng(data[i].y, data[i].x));
-      }
-
-      if (mapInstance) {
-        mapInstance.setBounds(bounds);
-      }
-    } else {
-      alert("검색 결과가 없습니다.");
+  // 추가 검색 (페이지 증가 시 호출)
+  const handleLoadMore = () => {
+    // 만약 현재 화면에 보이는 개수가 전체 로드된 결과보다 적다면
+    if (visiblePlaceCount < results.length) {
+      setVisiblePlaceCount(visiblePlaceCount + 10);
+    } else if (!isEnd) {
+      // 모든 로드된 결과를 이미 보여주고 있고 추가 데이터가 있다면,
+      // 추가 데이터를 받아오는 loadMore 함수 호출
+      loadMore({
+        inputPlace,
+        setResults,
+        setPageNumber,
+        pageNumber,
+        isEnd,
+        setIsEnd,
+        setVisiblePlaceCount,
+        displayMarker,
+      });
     }
+  };
+
+  // 마커를 초기화하는 함수
+  const clearMarkers = () => {
+    markersRef.current.forEach((marker) => marker.setMap(null));
+    markersRef.current = [];
   };
 
   // 지도에 마커를 표시하고 클릭 이벤트를 등록하는 함수
@@ -89,23 +113,27 @@ function KakaoMap(props) {
       position: new window.kakao.maps.LatLng(place.y, place.x),
     });
 
+    // 생성된 마커를 markersRef에 저장
+    markersRef.current.push(marker);
+
     // 마커에 클릭 이벤트 등록
     window.kakao.maps.event.addListener(marker, "click", function () {
-      infowindow.setContent(
+      infowindowRef.current.close();
+
+      infowindowRef.current.setContent(
         `<div style="padding:5px;font-size:12px;">${place.place_name}</div>`
       );
 
-      infowindow.open(mapInstance, marker);
+      infowindowRef.current.open(mapInstance, marker);
 
       // 위도 경도를 담을 객체
       const latlng = marker.getPosition();
-
-      // 클릭하면 위도, 경도 뽑기
-      setClickPlace(`위도 : ${latlng.getLat()}, 경도 : ${latlng.getLng()}`);
-
       // 위도 경도 나누기
       const clickLat = latlng.getLat();
       const clickLng = latlng.getLng();
+
+      // 클릭하면 위도, 경도 뽑기
+      setClickPlace(`위도 : ${latlng.getLat()}, 경도 : ${latlng.getLng()}`);
 
       // 이동
       setDefaultLocation({
@@ -119,7 +147,7 @@ function KakaoMap(props) {
   return (
     <>
       <div>
-        <form onSubmit={searchPlaces}>
+        <form onSubmit={handleSearch}>
           <input
             type="text"
             value={inputPlace}
@@ -140,27 +168,18 @@ function KakaoMap(props) {
         <ZoomControl position={"RIGHT"} />
       </Map>
       <button
-        onClick={() =>
-          setDefaultLocation({
-            center: { lat: 33.3606281, lng: 126.5358345 },
-            isPanto: true,
-            level: 10,
-          })
-        }
+        onClick={handleLoadMore}
+        // 추가로 불러올 데이터가 없는경우 비활성화
+        disabled={isEnd && visiblePlaceCount === results.length}
       >
-        지도 중심좌표 이동시키기
-      </button>{" "}
-      <button
-        onClick={() =>
-          setDefaultLocation({
-            center: { lat: 33.5070772, lng: 126.4934311 },
-            isPanto: true,
-            level: 3,
-          })
-        }
-      >
-        지도 중심좌표 부드럽게 이동시키기
+        더보기
       </button>
+
+      <ul>
+        {results.slice(0, visiblePlaceCount).map((place, i) => (
+          <li key={i}>{place.place_name}</li>
+        ))}
+      </ul>
     </>
   );
 }
