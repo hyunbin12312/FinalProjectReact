@@ -38,8 +38,15 @@ export const searchPlaces = ({
 
   // 기존 지도에 표시된 마커들을 제거
   clearMarkers();
-  // 기존 지도에 표시된 마커인터페이스들도 제거
+  // 기존 지도에 표시된 인포윈도우도 제거
   infowindowRef.current.close();
+
+  // axios 호출 전에 displayMarker를 호출하는 부분 제거
+  // if (typeof displayMarker === "function") {
+  //   documents.forEach((place) => {
+  //     displayMarker(place);
+  //   });
+  // }
 
   axios
     .get(`https://dapi.kakao.com/v2/local/search/keyword.json`, {
@@ -60,10 +67,12 @@ export const searchPlaces = ({
 
       console.log(response.data);
 
-      // 받아온 결과들에 대해 마커를 생성
-      documents.forEach((place) => {
-        displayMarker(place);
-      });
+      // 받아온 결과들에 대해 마커를 생성 (선택적으로 여기서 displayMarker를 호출할 수 있음)
+      if (typeof displayMarker === "function") {
+        documents.forEach((place) => {
+          displayMarker(place);
+        });
+      }
     })
     .catch((error) => {
       console.log(error);
