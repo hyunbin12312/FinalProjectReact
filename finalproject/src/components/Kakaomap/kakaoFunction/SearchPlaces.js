@@ -69,7 +69,6 @@ export const searchPlaces = ({
       console.log(error);
     });
 
-  console.log("콜백함수확인", placesSearchCB);
   ps.keywordSearch(keyword, (data, status) =>
     placesSearchCB({ data, status, mapInstance, displayMarker })
   );
