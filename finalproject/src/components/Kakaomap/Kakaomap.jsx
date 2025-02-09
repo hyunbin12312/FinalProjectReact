@@ -10,6 +10,7 @@ import { searchPlaces } from "./kakaoFunction/SearchPlaces";
 import { loadMore } from "./kakaoFunction/LoadMore";
 import { placesSearchCB } from "./kakaoFunction/PlaceSearchCB";
 import { reset } from "./kakaoFunction/reset";
+import PlaceCard from "./placeCard/PlaceCard";
 
 function KakaoMap() {
   useKakaoLoader();
@@ -164,7 +165,7 @@ function KakaoMap() {
 
   return (
     <>
-      <div>
+      <div style={{ paddingTop: "50px" }}>
         <form onSubmit={handleSearch}>
           <input
             type="text"
@@ -199,7 +200,6 @@ function KakaoMap() {
       >
         <ZoomControl position={"RIGHT"} />
       </Map>
-
       <ul>
         {results.slice(0, visiblePlaceCount).map((place, i) => (
           <li key={i}>{place.place_name}</li>
