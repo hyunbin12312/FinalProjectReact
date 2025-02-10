@@ -11,6 +11,9 @@ logs
 node_modules
 bower_components
 
+.hypernova
+/hypernova
+
 *.sublime*
 
 psd
