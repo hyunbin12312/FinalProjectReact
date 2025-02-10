@@ -21,7 +21,7 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<Main />} />
-          <Route path="/map" element={<KakaoMap />} />
+          <Route path="/map" element={<KakaoMapInfo />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </AuthProvider>
