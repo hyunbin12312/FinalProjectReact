@@ -5,8 +5,6 @@ import { AuthProvider } from "./components/context/AuthContext";
 import Login from "./components/Auth/Login/Login";
 import KakaoMap from "./components/Kakaomap/Kakaomap";
 import Kakaomap from "./components/Kakaomap/Kakaomap";
-import MoveMap from "./components/Kakaomap/aaaaa";
-
 import Main from "./components/Main/Main";
 import styled from "styled-components";
 import KakaoMapInfo from "./components/Kakaomap/KakaomapInfo";
@@ -28,7 +26,6 @@ function App() {
         </Routes>
       </AuthProvider>
 
-      <KakaoMapInfo />
       <br />
       <br />
       <br />
