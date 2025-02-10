@@ -11,11 +11,16 @@ logs
 node_modules
 bower_components
 
+.hypernova
+/hypernova
+
 *.sublime*
 
 psd
 thumb
 sketch
+
+.env
 
 ### VisualStudioCode ###
 .vscode/*
