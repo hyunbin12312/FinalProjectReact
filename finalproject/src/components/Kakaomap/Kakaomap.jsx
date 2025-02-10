@@ -9,6 +9,8 @@ import {
 import { searchPlaces } from "./kakaoFunction/SearchPlaces";
 import { loadMore } from "./kakaoFunction/LoadMore";
 import { placesSearchCB } from "./kakaoFunction/PlaceSearchCB";
+import { reset } from "./kakaoFunction/reset";
+import PlaceCard from "./placeCard/PlaceCard";
 
 function KakaoMap() {
   useKakaoLoader();
@@ -17,8 +19,8 @@ function KakaoMap() {
 
   // 지도의 기본 설정 state
   const [defaultLocation, setDefaultLocation] = useState({
-    center: { lat: 33.3606281, lng: 126.5358345 },
-    isPanto: false,
+    center: { lat: 33.3608281, lng: 126.5535785 },
+    isPanto: true,
     level: 10,
   });
 
@@ -58,6 +60,8 @@ function KakaoMap() {
   // 검색 폼 제출 시 호출되는 함수
   const handleSearch = (e) => {
     e.preventDefault();
+    // 검색을 다시 시작하면 더보기 버튼이 활성화됨
+    setIsEnd(false);
     searchPlaces({
       e,
       inputPlace,
@@ -95,6 +99,21 @@ function KakaoMap() {
         displayMarker,
       });
     }
+  };
+
+  // 초기화 버튼
+  const handleReset = () => {
+    reset({
+      setInputPlace,
+      setClickPlace,
+      setResults,
+      setIsEnd,
+      setPageNumber,
+      setVisiblePlaceCount,
+      setDefaultLocation,
+      clearMarkers,
+      infowindowRef,
+    });
   };
 
   // 마커를 초기화하는 함수
@@ -146,7 +165,7 @@ function KakaoMap() {
 
   return (
     <>
-      <div>
+      <div style={{ paddingTop: "50px" }}>
         <form onSubmit={handleSearch}>
           <input
             type="text"
@@ -158,23 +177,29 @@ function KakaoMap() {
         </form>
         <p>{clickPlace}</p>
       </div>
+      <div>
+        {inputPlace.trim() ? (
+          // 겁색어가 없을땐 disabled, 키워드가 입력되면 활성화
+          !isEnd ? (
+            <button onClick={handleLoadMore}>더보기</button>
+          ) : (
+            <button disabled>더보기</button>
+          )
+        ) : (
+          // 다시 검색버튼을 누르면 isEnd가 false로 바뀌어 활성화된다.
+          <button disabled>더보기</button>
+        )}
+        <button onClick={handleReset}>초기화</button>
+      </div>
       <Map
         center={defaultLocation.center}
         isPanto={defaultLocation.isPanto}
-        style={{ width: "800px", height: "360px" }}
+        style={{ width: "700px", height: "440px" }}
         level={defaultLocation.level}
         onCreate={setMapInstance}
       >
         <ZoomControl position={"RIGHT"} />
       </Map>
-      <button
-        onClick={handleLoadMore}
-        // 추가로 불러올 데이터가 없는경우 비활성화
-        disabled={isEnd && visiblePlaceCount === results.length}
-      >
-        더보기
-      </button>
-
       <ul>
         {results.slice(0, visiblePlaceCount).map((place, i) => (
           <li key={i}>{place.place_name}</li>
