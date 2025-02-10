@@ -1,40 +1,45 @@
 import React from "react";
 import styled from "styled-components";
 
-// 리스트 아이템 컨테이너: 기본 정보, 이미지, 선택 버튼을 좌우로 배치
+// 리스트 아이템 컨테이너: 모던하고 깔끔한 카드 스타일
 const ListItem = styled.li`
   display: flex;
-  align-items: flex-start; /* 내부 요소들을 상단에 정렬 */
+  align-items: flex-start;
   justify-content: space-between;
   padding: 16px;
-  border-bottom: 1px solid #ddd;
+  margin-bottom: 6px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: box-shadow 0.2s ease;
 
   &:hover {
-    background: #f7f7f7;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 `;
 
-// 좌측 80*80 이미지 영역
+// 좌측 80×80 이미지 영역
 const ThumbnailContainer = styled.div`
   width: 80px;
   height: 80px;
   margin-right: 16px;
   flex-shrink: 0;
+  background: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
 `;
 
-// 실제 이미지 태그 (100×100 영역에 맞게 표시)
+// 실제 이미지 태그 (80×80 영역에 맞게 표시)
 const ThumbnailImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 8px;
 `;
 
 // 이미지가 없을 경우 표시할 영역
@@ -42,7 +47,7 @@ const ThumbnailPlaceholder = styled.div`
   width: 100%;
   height: 100%;
   font-size: 14px;
-  color: #999;
+  color: #aaa;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -52,29 +57,28 @@ const ThumbnailPlaceholder = styled.div`
 const BasicInfo = styled.div`
   display: flex;
   flex-direction: column;
-  text-align: left;
   flex: 1; /* 남은 공간 사용 */
+  text-align: left;
 `;
 
-// 장소 이름 텍스트 (좌측 정렬)
+// 장소 이름 텍스트 (모던한 폰트 스타일)
 const PlaceName = styled.span`
   font-size: 18px;
   font-weight: bold;
   color: #333;
-  text-align: left;
+  margin-bottom: 4px;
 `;
 
-// 카테고리 텍스트 (좌측 정렬)
+// 카테고리 텍스트
 const PlaceCategory = styled.span`
   font-size: 16px;
   color: #777;
-  margin-top: 4px;
-  text-align: left;
 `;
 
-// 선택(추가) 버튼
+// 선택(추가/제거) 버튼
+// isSelected prop에 따라 배경색과 텍스트가 달라지도록 함.
 const SelectButton = styled.button`
-  background: #007bff;
+  background: ${({ isSelected }) => (isSelected ? "#dc3545" : "#007bff")};
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -84,15 +88,21 @@ const SelectButton = styled.button`
   transition: background 0.2s ease;
 
   &:hover {
-    background: #0056b3;
+    background: ${({ isSelected }) => (isSelected ? "#c82333" : "#0056b3")};
   }
 `;
 
-const PlaceListItem = ({ place, onSelect, onClick }) => {
+const PlaceListItem = ({
+  place,
+  isSelected = false,
+  onToggle = () => {},
+  onClick = () => {},
+}) => {
   // 버튼 클릭 시 이벤트 전파(stopPropagation)를 통해 li의 onClick과 구분함.
-  const handleSelect = (e) => {
+  const handleToggle = (e) => {
     e.stopPropagation();
-    onSelect(place);
+    onToggle(place);
+    console.log(place);
   };
 
   return (
@@ -108,7 +118,9 @@ const PlaceListItem = ({ place, onSelect, onClick }) => {
         <PlaceName>{place.name}</PlaceName>
         <PlaceCategory>{place.category}</PlaceCategory>
       </BasicInfo>
-      <SelectButton onClick={handleSelect}>추가</SelectButton>
+      <SelectButton isSelected={isSelected} onClick={handleToggle}>
+        {isSelected ? "제거" : "추가"}
+      </SelectButton>
     </ListItem>
   );
 };
