@@ -16,7 +16,7 @@ const ListItem = styled.li`
   }
 `;
 
-// 좌측 80*80 이미지 영역
+// 좌측 80×80 이미지 영역
 const ThumbnailContainer = styled.div`
   width: 80px;
   height: 80px;
@@ -30,7 +30,7 @@ const ThumbnailContainer = styled.div`
   border-radius: 4px;
 `;
 
-// 실제 이미지 태그 (100×100 영역에 맞게 표시)
+// 실제 이미지 태그 (80×80 영역에 맞게 표시)
 const ThumbnailImage = styled.img`
   width: 100%;
   height: 100%;
@@ -72,9 +72,10 @@ const PlaceCategory = styled.span`
   text-align: left;
 `;
 
-// 선택(추가) 버튼
+// 선택(추가/제거) 버튼
+// isSelected prop에 따라 배경색과 텍스트가 달라지도록 함.
 const SelectButton = styled.button`
-  background: #007bff;
+  background: ${({ isSelected }) => (isSelected ? "#dc3545" : "#007bff")};
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -84,15 +85,21 @@ const SelectButton = styled.button`
   transition: background 0.2s ease;
 
   &:hover {
-    background: #0056b3;
+    background: ${({ isSelected }) => (isSelected ? "#c82333" : "#0056b3")};
   }
 `;
 
-const PlaceListItem = ({ place, onSelect, onClick }) => {
+const PlaceListItem = ({
+  place,
+  isSelected = false,
+  onToggle = () => {},
+  onClick = () => {},
+}) => {
   // 버튼 클릭 시 이벤트 전파(stopPropagation)를 통해 li의 onClick과 구분함.
-  const handleSelect = (e) => {
+  const handleToggle = (e) => {
     e.stopPropagation();
-    onSelect(place);
+    onToggle(place);
+    console.log(place);
   };
 
   return (
@@ -108,7 +115,9 @@ const PlaceListItem = ({ place, onSelect, onClick }) => {
         <PlaceName>{place.name}</PlaceName>
         <PlaceCategory>{place.category}</PlaceCategory>
       </BasicInfo>
-      <SelectButton onClick={handleSelect}>추가</SelectButton>
+      <SelectButton isSelected={isSelected} onClick={handleToggle}>
+        {isSelected ? "제거" : "추가"}
+      </SelectButton>
     </ListItem>
   );
 };

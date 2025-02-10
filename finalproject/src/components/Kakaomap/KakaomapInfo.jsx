@@ -1,5 +1,5 @@
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { useEffect, useState, useRef } from "react";
 import {
   Map,
   MapTypeControl,
@@ -14,17 +14,20 @@ import PlaceList from "./placeCard/PlaceList";
 import styled from "styled-components";
 import SearchTab from "./kakaoComponents/SearchTab";
 
+// Flex Container를 생성하여 PlaceList와 Map을 좌우로 배치
 const ContentContainer = styled.div`
   display: flex;
   gap: 20px;
   align-items: flex-start;
 `;
 
+// PlaceList 영역의 스타일 (예: 너비 지정)
 const ListContainer = styled.div`
   flex: 1;
   max-width: 600px;
 `;
 
+// Map 영역의 스타일 (예: 너비 지정)
 const MapContainer = styled.div`
   flex: 2;
   min-width: 700px;
@@ -52,10 +55,10 @@ function KakaoMapInfo() {
   // 마커 관리
   const markersRef = useRef([]);
 
-  // Map 인스턴스
+  // Map 인스턴스를 저장할 state
   const [mapInstance, setMapInstance] = useState(null);
 
-  // 검색어 상태
+  // 사용자가 입력한 검색어 상태
   const [inputPlace, setInputPlace] = useState("");
 
   // 검색 결과 관련 상태
@@ -74,6 +77,7 @@ function KakaoMapInfo() {
   const handleSearch = (e) => {
     e.preventDefault();
     setIsEnd(false);
+    // displayMarker 함수는 검색 시 자동 호출되지 않도록 더미 함수를 전달
     searchPlaces({
       e,
       inputPlace,
@@ -90,7 +94,7 @@ function KakaoMapInfo() {
     });
   };
 
-  // 추가 검색 (페이지 증가 시)
+  // 추가 검색 (페이지 증가 시) 호출되는 함수
   const handleLoadMore = () => {
     if (visiblePlaceCount < results.length) {
       setVisiblePlaceCount(visiblePlaceCount + 10);
@@ -108,7 +112,7 @@ function KakaoMapInfo() {
     }
   };
 
-  // 초기화 버튼
+  // 초기화 버튼 클릭 시 호출되는 함수
   const handleReset = () => {
     reset({
       setInputPlace,
@@ -124,19 +128,21 @@ function KakaoMapInfo() {
     setSelectedPlaces([]); // 선택된 장소 배열도 초기화
   };
 
-  // 마커 초기화 함수
+  // 지도에 표시된 마커들을 모두 제거하는 함수
   const clearMarkers = () => {
     markersRef.current.forEach((marker) => marker.setMap(null));
     markersRef.current = [];
   };
 
-  // 지도에 마커 표시 및 이벤트 등록 함수
+  // 지도에 마커를 표시하고 클릭 이벤트를 등록하는 함수
   const displayMarker = (place) => {
     if (!mapInstance) return;
     const marker = new window.kakao.maps.Marker({
       map: mapInstance,
       position: new window.kakao.maps.LatLng(place.y, place.x),
     });
+    // 예: 각 마커에 customId를 할당 (여기서는 장소 이름 사용)
+    marker.customId = place.name;
     markersRef.current.push(marker);
 
     window.kakao.maps.event.addListener(marker, "click", function () {
@@ -160,9 +166,8 @@ function KakaoMapInfo() {
     });
   };
 
-  // PlaceList에서 "추가" 버튼 클릭 시 호출되는 함수
+  // PlaceList에서 "추가" 버튼 클릭 시 호출되는 함수 (선택된 장소에 대해 마커 표시)
   const handleSelectPlace = (place) => {
-    // 중복 선택 방지 로직 등
     setSelectedPlaces((prev) => {
       if (!prev.find((p) => p.name === place.name)) {
         // 선택된 장소에 대해서만 마커 표시
@@ -175,6 +180,29 @@ function KakaoMapInfo() {
     });
   };
 
+  // 선택 토글 함수: PlaceListItem에서 onToggle으로 호출됨.
+  // 이미 선택되어 있으면 제거하고, 선택되지 않았으면 추가함.
+  const handleTogglePlace = (place) => {
+    setSelectedPlaces((prev) => {
+      if (prev.find((p) => p.name === place.name)) {
+        // 마커 제거: markersRef에서 해당 마커를 찾아 제거
+        markersRef.current = markersRef.current.filter((marker) => {
+          if (marker.customId === place.name) {
+            marker.setMap(null);
+            return false;
+          }
+          return true;
+        });
+        return prev.filter((p) => p.name !== place.name);
+      } else {
+        if (mapInstance) {
+          displayMarker(place);
+        }
+        return [...prev, place];
+      }
+    });
+  };
+
   // PlaceList에서 항목 클릭 시(예: 모달 열기 등) 호출되는 함수
   const handleItemClick = (place) => {
     console.log("장소 클릭:", place);
@@ -183,6 +211,7 @@ function KakaoMapInfo() {
 
   return (
     <>
+      {/* 상단 검색 영역 */}
       <div style={{ paddingTop: "50px" }}>
         <SearchTab
           inputPlace={inputPlace}
@@ -191,6 +220,7 @@ function KakaoMapInfo() {
         />
         <p>{clickPlace}</p>
       </div>
+      {/* 더보기 및 초기화 버튼 */}
       <div>
         {inputPlace.trim() ? (
           !isEnd ? (
@@ -214,11 +244,12 @@ function KakaoMapInfo() {
               category: place.category_group_name,
               phone: place.phone,
               detailLink: `https://map.kakao.com/link/map/${place.id}`,
-              imageUrl: place.image_url, // 이미지 URL이 있다면
-              y: place.y, // 좌표 정보 추가 (필요한 경우)
-              x: place.x, // 좌표 정보 추가 (필요한 경우)
+              imageUrl: place.image_url, // 이미지 URL이 있다면 사용
+              y: place.y, // 좌표 정보 추가
+              x: place.x, // 좌표 정보 추가
             }))}
-            onSelect={handleSelectPlace} // 반드시 함수여야 함
+            selectedPlaces={selectedPlaces}
+            onToggle={handleTogglePlace} // 토글 함수 전달
             onItemClick={handleItemClick}
           />
         </ListContainer>
