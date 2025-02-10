@@ -13,7 +13,7 @@ const HeaderComponent = () => {
         <MenuList>
           <MenuItem>메뉴 1</MenuItem>
           <MenuItem>메뉴 2</MenuItem>
-          <MenuItem>메뉴 3</MenuItem>
+          <MenuItem>로그인</MenuItem>
         </MenuList>
       </Menu>
     </HeaderContainer>

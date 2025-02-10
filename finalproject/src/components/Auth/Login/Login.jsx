@@ -28,10 +28,11 @@ const Login = () => {
       .then((response) => {
         const { username, tokens } = response.data;
         login(username, tokens.accessToken, tokens.refreshToken);
+        alert("로그인 성공!");
         window.location = "/";
       })
       .catch((error) => {
-        console.log(error);
+        alert("로그인 실패, 입력을 확인하세요");
       });
   };
 
