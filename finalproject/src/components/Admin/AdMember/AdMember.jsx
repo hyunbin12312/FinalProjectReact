@@ -10,9 +10,29 @@ import {
   Button,
 } from "./AdMember.styles";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const AdMember = () => {
+  const [members, setMembers] = useState([]);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost/admin/findMembers", {
+        params: {
+          page: page,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setMembers([...members, ...response.data]);
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  }, [page]);
+
   return (
     <>
       <AdLayout />
@@ -27,29 +47,32 @@ const AdMember = () => {
             <StyledTh>활동상태↕</StyledTh>
             <StyledTh>가입일↕</StyledTh>
           </thead>
-          <tbody>
-            <StyledTd>
-              <input type="checkbox" />
-            </StyledTd>
-            <StyledTd>userId</StyledTd>
-            <StyledTd>user@kh.com</StyledTd>
-            <StyledTd>ROLE_USER</StyledTd>
-            <StyledTd>'Y'</StyledTd>
-            <StyledTd>2025/02/11 15:13</StyledTd>
-          </tbody>
+
+          {members.map((member) => (
+            <tbody key={member.userId}>
+              <StyledTd>
+                <input type="checkbox" />
+              </StyledTd>
+              <StyledTd>{member.userId}</StyledTd>
+              <StyledTd>{member.email}</StyledTd>
+              <StyledTd>{member.role}</StyledTd>
+              <StyledTd>{member.status}</StyledTd>
+              <StyledTd>{member.enrollDate}</StyledTd>
+            </tbody>
+          ))}
         </MemberTable>
 
         <PageDiv>
           <PageButton disabled>이전</PageButton>
           <PageNo>1</PageNo>
-          <PageButton>다음</PageButton>
+          <PageButton disabled>다음</PageButton>
         </PageDiv>
 
         <br />
         <br />
         <h6>*다중 선택 가능합니다.</h6>
         <Button>메일 발송</Button>
-        <Button>정지</Button>
+        <Button>회원 정지</Button>
         <Button>정지 해제</Button>
       </WrapDiv>
     </>
