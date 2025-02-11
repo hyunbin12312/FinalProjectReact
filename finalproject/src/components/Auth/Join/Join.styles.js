@@ -13,24 +13,31 @@ export const CommonContainer = styled.div`
   border-radius: 10px;
   width: 600px;
   height: auto;
-  min-height: 500px;
+  min-height: 400px;
 `;
 export const Form = styled.form`
-  margin-top: 80px;
+  margin-top: 50px;
 `;
 export const Input = styled.input`
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  width: 70%;
+  width: 80%;
 `;
 export const Btn = styled.button`
-  width: 70%;
-  height: 45px;
+  width: 80%;
+  height: 55px;
   border: none;
   border-radius: 2px;
+  margin-top: 30px;
+  margin-bottom: 130px;
 `;
 export const Atag = styled.a`
   margin: 25px;
+`;
+export const Label = styled.label`
+  font-weight: 500;
+  font-size: 23px;
+  padding-right: 430px;
 `;

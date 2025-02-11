@@ -9,6 +9,7 @@ import Main from "./components/Main/Main";
 import styled from "styled-components";
 import KakaoMapInfo from "./components/Kakaomap/KakaomapInfo";
 import Header from "./components/Header/Header";
+import Join from "./components/Auth/Join/Join";
 
 function App() {
   const AppContent = styled.div`
@@ -17,12 +18,13 @@ function App() {
 
   return (
     <div className="App">
+      <Header />
       <AuthProvider>
-        <Header />
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/map" element={<KakaoMap />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/join" element={<Join />} />
         </Routes>
       </AuthProvider>
 

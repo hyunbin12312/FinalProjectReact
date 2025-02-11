@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import { HeaderContainer, Menu, MenuList, MenuItem } from "./HeaderStyled";
+import { useNavigate } from "react-router-dom";
 
 const HeaderComponent = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const navi = useNavigate();
+  const goTo = (path) => {
+    navi(path);
+  };
+  // 로그아웃은 auth 할 때 구현
 
   return (
     <HeaderContainer
@@ -11,9 +17,11 @@ const HeaderComponent = () => {
     >
       <Menu show={showMenu}>
         <MenuList>
-          <MenuItem>메뉴 1</MenuItem>
-          <MenuItem>메뉴 2</MenuItem>
-          <MenuItem>로그인</MenuItem>
+          <MenuItem onClick={() => goTo("/")}>홈</MenuItem>
+          <MenuItem>내 정보</MenuItem>
+          <MenuItem onClick={() => goTo("/join")}>회원가입</MenuItem>
+          <MenuItem onClick={() => goTo("/login")}>로그인</MenuItem>
+          <MenuItem>로그아웃</MenuItem>
         </MenuList>
       </Menu>
     </HeaderContainer>
