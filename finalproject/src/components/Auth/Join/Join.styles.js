@@ -5,6 +5,7 @@ export const Title = styled.h1`
   font-weight: 700;
 `;
 export const StyledDiv = styled.div`
+  text-align: center;
   margin-top: 150px;
 `;
 export const CommonContainer = styled.div`

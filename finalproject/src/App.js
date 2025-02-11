@@ -10,6 +10,9 @@ import styled from "styled-components";
 import KakaoMapInfo from "./components/Kakaomap/KakaomapInfo";
 import Header from "./components/Header/Header";
 import Join from "./components/Auth/Join/Join";
+import MyPage from "./components/Auth/MyPage/MyPage";
+import AdMain from "./components/Admin/AdMain/AdMain";
+import AdMember from "./components/Admin/AdMember/AdMember";
 
 function App() {
   const AppContent = styled.div`
@@ -25,6 +28,9 @@ function App() {
           <Route path="/map" element={<KakaoMap />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
+          <Route path="/myPage" element={<MyPage />} />
+          <Route path="/admin" element={<AdMain />} />
+          <Route path="/admin/adMember" element={<AdMember />} />
         </Routes>
       </AuthProvider>
 

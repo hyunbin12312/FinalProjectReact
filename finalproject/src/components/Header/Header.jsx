@@ -18,9 +18,10 @@ const HeaderComponent = () => {
       <Menu show={showMenu}>
         <MenuList>
           <MenuItem onClick={() => goTo("/")}>홈</MenuItem>
-          <MenuItem>내 정보</MenuItem>
+          <MenuItem onClick={() => goTo("/myPage")}>내 정보</MenuItem>
           <MenuItem onClick={() => goTo("/join")}>회원가입</MenuItem>
           <MenuItem onClick={() => goTo("/login")}>로그인</MenuItem>
+          <MenuItem onClick={() => goTo("/admin")}>관리자 페이지</MenuItem>
           <MenuItem>로그아웃</MenuItem>
         </MenuList>
       </Menu>
