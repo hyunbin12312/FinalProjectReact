@@ -13,14 +13,18 @@ import axios from "axios";
 import { useRef, useEffect, useState } from "react";
 
 const AdMember = () => {
+  const [requestUrl, setRequestUrl] = useState(
+    "http://localhost/admin/findMembers"
+  );
   const [members, setMembers] = useState([]);
   const [page, setPage] = useState(1);
+  const [sort, setSort] = useState(1);
   const nextBtnRef = useRef(null);
   const prevBtnRef = useRef(null);
 
   useEffect(() => {
     axios
-      .get("http://localhost/admin/findMembers", {
+      .get(requestUrl, {
         params: {
           page: page,
         },
@@ -47,11 +51,66 @@ const AdMember = () => {
     }
   }, [members]);
 
+  useEffect(() => {
+    axios
+      .get(requestUrl, {
+        params: {
+          page: page,
+        },
+      })
+      .then((response) => {
+        setMembers([...response.data]);
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  }, [requestUrl]);
+
   const handleNextPage = () => {
     setPage(page + 1);
   };
   const handlePrevPage = () => {
     setPage(page - 1);
+  };
+
+  const sortById = () => {
+    if (sort === 1) {
+      setRequestUrl("http://localhost/admin/findMembersAsc");
+      setSort(2);
+    } else {
+      setRequestUrl("http://localhost/admin/findMembers");
+      setSort(1);
+    }
+  };
+  const sortByMail = () => {
+    if (sort === 1) {
+      setRequestUrl("http://localhost/admin/findByMail");
+      setSort(2);
+    } else {
+      setRequestUrl("http://localhost/admin/findByMailAsc");
+      setSort(1);
+    }
+  };
+  const sortByStatus = () => {
+    if (sort === 1) {
+      setRequestUrl("http://localhost/admin/findByStatus");
+      setSort(2);
+    } else {
+      setRequestUrl("http://localhost/admin/findByStatusAsc");
+      setSort(1);
+    }
+  };
+  const sortByDate = () => {
+    if (sort === 1) {
+      setRequestUrl("http://localhost/admin/findByDate");
+      setSort(2);
+    } else {
+      setRequestUrl("http://localhost/admin/findByDateAsc");
+      setSort(1);
+    }
+  };
+  const findAdmin = () => {
+    setRequestUrl("http://localhost/admin/findAdmin");
   };
 
   return (
@@ -62,11 +121,11 @@ const AdMember = () => {
         <MemberTable>
           <thead>
             <StyledTh>선택</StyledTh>
-            <StyledTh>회원ID↕</StyledTh>
-            <StyledTh>E-Mail↕</StyledTh>
-            <StyledTh>등급↕</StyledTh>
-            <StyledTh>활동상태↕</StyledTh>
-            <StyledTh>가입일↕</StyledTh>
+            <StyledTh onClick={sortById}>회원ID↕</StyledTh>
+            <StyledTh onClick={sortByMail}>E-Mail↕</StyledTh>
+            <StyledTh>등급</StyledTh>
+            <StyledTh onClick={sortByStatus}>활동상태↕</StyledTh>
+            <StyledTh onClick={sortByDate}>가입일↕</StyledTh>
           </thead>
 
           {members.map((member) => (
@@ -96,6 +155,7 @@ const AdMember = () => {
         <br />
         <br />
         <h6>*다중 선택 가능합니다.</h6>
+        <Button onClick={findAdmin}>관리자 목록 보기</Button>
         <Button>메일 발송</Button>
         <Button>회원 정지</Button>
         <Button>정지 해제</Button>
