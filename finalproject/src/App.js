@@ -30,7 +30,7 @@ function App() {
           <Route path="/join" element={<Join />} />
           <Route path="/myPage" element={<MyPage />} />
           <Route path="/admin" element={<AdMain />} />
-          <Route path="/admin/adMember" element={<AdMember />} />
+          <Route path="/admin/findMember" element={<AdMember />} />
         </Routes>
       </AuthProvider>
 

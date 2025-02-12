@@ -32,7 +32,7 @@ const AdLayout = () => {
             <ul>
               <StyledLi onClick={() => goTo("/admin")}>관리자 홈</StyledLi>
               <BannerMargin />
-              <StyledLi onClick={() => goTo("/admin/adMember")}>
+              <StyledLi onClick={() => goTo("/admin/findMember")}>
                 회원 관리
               </StyledLi>
               <BannerMargin />

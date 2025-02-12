@@ -10,12 +10,13 @@ import {
   Button,
 } from "./AdMember.styles";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 
 const AdMember = () => {
   const [members, setMembers] = useState([]);
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+  const nextBtnRef = useRef(null);
+  const prevBtnRef = useRef(null);
 
   useEffect(() => {
     axios
@@ -25,13 +26,33 @@ const AdMember = () => {
         },
       })
       .then((response) => {
-        console.log(response);
-        setMembers([...members, ...response.data]);
+        setMembers([...response.data]);
       })
       .catch((error) => {
         alert(error);
       });
+
+    if (page == 1) {
+      prevBtnRef.current.disabled = true;
+    } else {
+      prevBtnRef.current.disabled = false;
+    }
   }, [page]);
+
+  useEffect(() => {
+    if (members.length > 1 && members.length < 10) {
+      nextBtnRef.current.disabled = true;
+    } else {
+      nextBtnRef.current.disabled = false;
+    }
+  }, [members]);
+
+  const handleNextPage = () => {
+    setPage(page + 1);
+  };
+  const handlePrevPage = () => {
+    setPage(page - 1);
+  };
 
   return (
     <>
@@ -55,7 +76,7 @@ const AdMember = () => {
               </StyledTd>
               <StyledTd>{member.userId}</StyledTd>
               <StyledTd>{member.email}</StyledTd>
-              <StyledTd>{member.role}</StyledTd>
+              <StyledTd>{member.role.split("_")[1]}</StyledTd>
               <StyledTd>{member.status}</StyledTd>
               <StyledTd>{member.enrollDate}</StyledTd>
             </tbody>
@@ -63,9 +84,13 @@ const AdMember = () => {
         </MemberTable>
 
         <PageDiv>
-          <PageButton disabled>이전</PageButton>
-          <PageNo>1</PageNo>
-          <PageButton disabled>다음</PageButton>
+          <PageButton ref={prevBtnRef} onClick={handlePrevPage}>
+            이전
+          </PageButton>
+          <PageNo>{page}</PageNo>
+          <PageButton ref={nextBtnRef} onClick={handleNextPage}>
+            다음
+          </PageButton>
         </PageDiv>
 
         <br />
