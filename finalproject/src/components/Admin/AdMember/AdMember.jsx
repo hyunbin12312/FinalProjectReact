@@ -8,6 +8,7 @@ import {
   PageDiv,
   PageNo,
   Button,
+  CheckBox,
 } from "./AdMember.styles";
 import axios from "axios";
 import { useRef, useEffect, useState } from "react";
@@ -19,6 +20,7 @@ const AdMember = () => {
   const [members, setMembers] = useState([]);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState(1);
+  const [check, setCheck] = useState([]);
   const nextBtnRef = useRef(null);
   const prevBtnRef = useRef(null);
 
@@ -113,6 +115,16 @@ const AdMember = () => {
     setRequestUrl("http://localhost/admin/findAdmin");
   };
 
+  const handleCheckbox = (userId) => {
+    setCheck(userId);
+    console.log(check);
+  };
+  useEffect(() => {}, [check]);
+  /*
+    1. 체크박스 행 선택
+    2. authoricate, 정보수정, 탈퇴 마무리
+  */
+
   return (
     <>
       <AdLayout />
@@ -131,7 +143,11 @@ const AdMember = () => {
           {members.map((member) => (
             <tbody key={member.userId}>
               <StyledTd>
-                <input type="checkbox" />
+                <CheckBox
+                  type="checkbox"
+                  checked={check.includes(member.userId)}
+                  onChange={() => handleCheckbox(member.userId)}
+                />
               </StyledTd>
               <StyledTd>{member.userId}</StyledTd>
               <StyledTd>{member.email}</StyledTd>
@@ -153,12 +169,13 @@ const AdMember = () => {
         </PageDiv>
 
         <br />
-        <br />
-        <h6>*다중 선택 가능합니다.</h6>
-        <Button onClick={findAdmin}>관리자 목록 보기</Button>
         <Button>메일 발송</Button>
         <Button>회원 정지</Button>
         <Button>정지 해제</Button>
+        <h6>*다중 선택 가능합니다.</h6>
+        <br />
+        <Button onClick={findAdmin}>관리자 목록 보기</Button>
+        <Button>돌아가기</Button>
       </WrapDiv>
     </>
   );

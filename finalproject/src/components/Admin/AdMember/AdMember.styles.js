@@ -38,3 +38,4 @@ export const PageButton = styled.button`
 export const PageNo = styled.p`
   display: inline;
 `;
+export const CheckBox = styled.input``;
