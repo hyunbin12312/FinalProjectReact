@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const Title = styled.h1`
   margin-top: 50px;
+  margin-bottom: 50px;
   font-weight: 700;
 `;
 export const StyledDiv = styled.div`
@@ -14,7 +15,7 @@ export const CommonContainer = styled.div`
   border-radius: 10px;
   width: 800px;
   height: auto;
-  min-height: 400px;
+  min-height: 600px;
 `;
 export const Form = styled.form`
   margin-top: 50px;

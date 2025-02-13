@@ -35,7 +35,7 @@ const AdMember = () => {
         setMembers([...response.data]);
       })
       .catch((error) => {
-        alert(error);
+        alert("접근 권한이 없습니다.");
       });
 
     if (page == 1) {
@@ -64,7 +64,7 @@ const AdMember = () => {
         setMembers([...response.data]);
       })
       .catch((error) => {
-        alert(error);
+        alert("접근 권한이 없습니다.");
       });
   }, [requestUrl]);
 

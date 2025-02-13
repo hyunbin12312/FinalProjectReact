@@ -6,7 +6,6 @@ const AdMain = () => {
   return (
     <>
       <AdLayout />
-      <h1>관리자 메인</h1>
     </>
   );
 };

@@ -21,8 +21,8 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
       <AuthProvider>
+        <Header />
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/map" element={<KakaoMap />} />

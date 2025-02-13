@@ -34,4 +34,8 @@ export const Btn = styled.button`
 `;
 export const Atag = styled.a`
   margin: 25px;
+  &:hover {
+    cursor: pointer;
+    color: purple;
+  }
 `;
