@@ -1,26 +1,24 @@
-import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import React, { useState, useContext } from "react";
+import React, { useContext, useState } from "react";
 import { HeaderContainer, Menu, MenuList, MenuItem } from "./HeaderStyled";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const HeaderComponent = () => {
   const [showMenu, setShowMenu] = useState(false);
-
   const navi = useNavigate();
-
   const goTo = (path) => {
     navi(path);
   };
-
-  // useContext와 AuthContext를 import하고
-  // useContext를 이용해서 AuthContext를 사용하도록 한다.
   const { auth, logout } = useContext(AuthContext);
 
   const handleLogout = () => {
-    // axios로 refreshToken을 보내서 DB에서 삭제
-
-    logout();
+    if (window.confirm("로그아웃 하시겠어요?")) {
+      logout();
+      alert("로그아웃 되었습니다.");
+      goTo("/login");
+    }
   };
+
   return (
     <HeaderContainer
       onMouseEnter={() => setShowMenu(true)}
@@ -28,10 +26,22 @@ const HeaderComponent = () => {
     >
       <Menu show={showMenu}>
         <MenuList>
-          <MenuItem onClick={() => goTo("/")}> 메인 </MenuItem>
-          <MenuItem onClick={() => goTo("/map")}> 지도보기</MenuItem>
-          <MenuItem onClick={() => goTo("/map/list")}>내 플랜 보기</MenuItem>
-          <MenuItem>메뉴 3</MenuItem>
+          <MenuItem onClick={() => goTo("/")}>홈</MenuItem>
+          {auth.isAuthenticated ? (
+            <>
+              <MenuItem onClick={() => goTo("/myPage")}>내 정보</MenuItem>
+              <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
+              {auth.role === "ROLE_ADMIN" && (
+                <MenuItem onClick={() => goTo("/admin")}>
+                  관리자 페이지
+                </MenuItem>
+              )}
+            </>
+          ) : (
+            <>
+              <MenuItem onClick={() => goTo("/login")}>로그인</MenuItem>
+            </>
+          )}
         </MenuList>
       </Menu>
     </HeaderContainer>

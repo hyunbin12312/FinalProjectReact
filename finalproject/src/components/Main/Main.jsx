@@ -2,11 +2,13 @@ import styled from "styled-components";
 
 const Main = () => {
   const MainContent = styled.div`
-    margin-top: 80px;
+    margin-top: 200px;
   `;
   return (
     <MainContent>
-      <h1>메인 자리</h1>
+      <h1>메인 페이지</h1>
+      <hr />
+      <h5>추천 리스트, 리스트 만들기 뻐튼, 배너</h5>
     </MainContent>
   );
 };

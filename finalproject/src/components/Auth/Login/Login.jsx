@@ -10,10 +10,16 @@ import {
 import axios from "axios";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [userId, setUserId] = useState("");
   const [userPwd, setUserPwd] = useState("");
+
+  const navi = useNavigate();
+  const goTo = (path) => {
+    navi(path);
+  };
 
   const { login } = useContext(AuthContext);
 
@@ -26,12 +32,13 @@ const Login = () => {
         userPwd: userPwd,
       })
       .then((response) => {
-        const { username, tokens } = response.data;
-        login(username, tokens.accessToken, tokens.refreshToken);
+        const { username, tokens, role } = response.data;
+        login(username, tokens.accessToken, tokens.refreshToken, role);
+        alert("로그인 성공!");
         window.location = "/";
       })
       .catch((error) => {
-        console.log(error);
+        alert("로그인 실패, 입력을 확인하세요");
       });
   };
 
@@ -55,8 +62,8 @@ const Login = () => {
             required
           ></Input>
           <br />
-          <Atag>회원가입</Atag>
-          <Atag>ID/PW 찾기</Atag>
+          <Atag onClick={() => goTo("/join")}>회원가입</Atag>
+          <Atag onClick={() => goTo("/findInfo")}>ID/PW 찾기</Atag>
           <br />
           <br />
           <Btn type="submit">입력완료</Btn>
