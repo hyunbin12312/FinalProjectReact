@@ -27,6 +27,19 @@ const HeaderComponent = () => {
       <Menu show={showMenu}>
         <MenuList>
           <MenuItem onClick={() => goTo("/")}>홈</MenuItem>
+          <MenuItem onClick={() => goTo("/map")}>일정만들기</MenuItem>
+          {auth.isAuthenticated ? (
+            <MenuItem onClick={() => goTo("/map/list")}>내 일정 보기</MenuItem>
+          ) : (
+            <MenuItem
+              onClick={() => {
+                alert("로그인 이후에 가능합니다.");
+                goTo("/login");
+              }}
+            >
+              내 일정 보기
+            </MenuItem>
+          )}
           {auth.isAuthenticated ? (
             <>
               <MenuItem onClick={() => goTo("/myPage")}>내 정보</MenuItem>

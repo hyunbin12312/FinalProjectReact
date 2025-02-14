@@ -1,5 +1,6 @@
 // KakaoMapInfo.jsx
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Map, ZoomControl, useKakaoLoader } from "react-kakao-maps-sdk";
@@ -102,6 +103,8 @@ function KakaoMapInfo() {
 
   // 카카오 지도 SDK가 로드된 후 사용할 장소 검색 객체 생성
   const ps = new window.kakao.maps.services.Places();
+
+  const { auth } = useContext(AuthContext);
 
   // 지도의 기본 설정 state
   const [defaultLocation, setDefaultLocation] = useState({
@@ -294,6 +297,9 @@ function KakaoMapInfo() {
   const handleSubmit = async () => {
     try {
       const response = await axios.post("http://localhost/map", {
+        headers: {
+          Authorization: `Bearer ${auth.accessToken}`,
+        },
         travelPlan: allPlaceInfo,
       });
       console.log("Submit 성공:", response.data);
@@ -373,7 +379,13 @@ function KakaoMapInfo() {
           {/* CenterContainer: 선택된 장소 목록과 Submit 버튼 */}
           <CenterContainer>
             <SelectedList selectedPlaces={selectedPlaces} />
-            <StyledButton onClick={handleSubmit}>일정생성</StyledButton>
+            {auth.isAuthenticated ? (
+              <StyledButton onClick={handleSubmit}>일정생성</StyledButton>
+            ) : (
+              <StyledButton onClick={() => alert("로그인 이후에 가능합니다.")}>
+                일정생성
+              </StyledButton>
+            )}
           </CenterContainer>
           <RightContainer>
             <Map

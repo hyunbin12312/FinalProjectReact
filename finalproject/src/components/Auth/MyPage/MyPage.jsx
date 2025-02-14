@@ -29,7 +29,7 @@ const MyPage = () => {
           <StyledP>
             '<StyledSpan>{auth.username}</StyledSpan>'님 안녕하세요
           </StyledP>
-          <Btn>내가 만든 리스트</Btn>
+          <Btn onClick={() => goTo("/map/list")}>내가 만든 리스트</Btn>
           <Btn onClick={() => goTo("/updateInfo")}>정보 수정</Btn>
           <Btn>회원 탈퇴</Btn>
         </CommonContainer>
