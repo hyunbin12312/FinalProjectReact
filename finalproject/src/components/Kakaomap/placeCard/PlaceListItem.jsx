@@ -1,7 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 
-// 리스트 아이템 컨테이너: 모던하고 깔끔한 카드 스타일
+/*
+
+  이 컴포넌트는 검색 혹은 카테고리를 선택했을 때 보여주는 장소들에 대한 컴포넌트입니다.
+
+*/
+
+// 리스트 아이템 컨테이너
 const ListItem = styled.li`
   display: flex;
   align-items: flex-start;
@@ -102,7 +108,6 @@ const PlaceListItem = ({
   const handleToggle = (e) => {
     e.stopPropagation();
     onToggle(place);
-    console.log(place);
   };
 
   return (

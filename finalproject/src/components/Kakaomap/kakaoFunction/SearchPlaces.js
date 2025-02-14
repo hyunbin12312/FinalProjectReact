@@ -1,5 +1,13 @@
 import axios from "axios";
 
+/*
+
+  이 컴포넌트는 검색에대한 결과를 API로 요청하는 컴포넌트입니다.
+
+  axios를 사용하여 API 결과를 요청합니다.
+
+*/
+
 export const searchPlaces = ({
   e,
   inputPlace,
@@ -16,7 +24,7 @@ export const searchPlaces = ({
 }) => {
   e.preventDefault();
   const keyword = inputPlace;
-  console.log("검색어:", keyword);
+  //console.log("검색어:", keyword);
 
   if (!keyword.trim("")) {
     alert("검색어를 입력해주세요");
@@ -41,13 +49,6 @@ export const searchPlaces = ({
   // 기존 지도에 표시된 인포윈도우도 제거
   infowindowRef.current.close();
 
-  // axios 호출 전에 displayMarker를 호출하는 부분 제거
-  // if (typeof displayMarker === "function") {
-  //   documents.forEach((place) => {
-  //     displayMarker(place);
-  //   });
-  // }
-
   axios
     .get(`https://dapi.kakao.com/v2/local/search/keyword.json`, {
       headers: {
@@ -65,7 +66,7 @@ export const searchPlaces = ({
       // 기존 결과에 추가 (필요에 따라 results 상태를 업데이트)
       setResults((prevResults) => [...prevResults, ...documents]);
 
-      console.log(response.data);
+      //console.log(response.data);
 
       // 받아온 결과들에 대해 마커를 생성 (선택적으로 여기서 displayMarker를 호출할 수 있음)
       if (typeof displayMarker === "function") {

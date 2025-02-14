@@ -9,6 +9,7 @@ import Main from "./components/Main/Main";
 import styled from "styled-components";
 import KakaoMapInfo from "./components/Kakaomap/KakaomapInfo";
 import Header from "./components/Header/Header";
+import ViewMyPlan from "./components/Kakaomap/ViewMyPlan/ViewMyPlan";
 
 function App() {
   const AppContent = styled.div`
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/map" element={<KakaoMapInfo />} />
+          <Route path="/map/list" element={<ViewMyPlan />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </AuthProvider>

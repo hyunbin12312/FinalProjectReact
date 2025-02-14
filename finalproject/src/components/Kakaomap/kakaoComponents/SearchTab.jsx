@@ -1,7 +1,8 @@
+// src/kakaoComponents/SearchTab.jsx
 import React from "react";
 import styled from "styled-components";
 
-// 검색 폼 컨테이너 (모던하고 깔끔한 느낌)
+// 검색 폼 컨테이너
 const SearchForm = styled.form`
   display: flex;
   align-items: center;
@@ -14,7 +15,7 @@ const SearchForm = styled.form`
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 `;
 
-// 검색 입력창 (심플하고 깔끔하게)
+// 검색 입력창
 const SearchInput = styled.input`
   flex: 1;
   padding: 10px 12px;
@@ -23,13 +24,12 @@ const SearchInput = styled.input`
   font-size: 16px;
   outline: none;
   transition: border-color 0.2s ease;
-
   &:focus {
     border-color: #007bff;
   }
 `;
 
-// 검색 버튼 (모던한 버튼 스타일)
+// 검색 버튼
 const SearchButton = styled.button`
   padding: 10px 16px;
   background-color: #007bff;
@@ -39,7 +39,6 @@ const SearchButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-
   &:hover {
     background-color: #0056b3;
   }
