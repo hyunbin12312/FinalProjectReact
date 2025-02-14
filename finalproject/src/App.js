@@ -14,6 +14,7 @@ import MyPage from "./components/Auth/MyPage/MyPage";
 import UpdateInfo from "./components/Auth/UpdateInfo/UpdateInfo";
 import AdMain from "./components/Admin/AdMain/AdMain";
 import AdMember from "./components/Admin/AdMember/AdMember";
+import ViewMyPlan from "./components/Kakaomap/ViewMyPlan/ViewMyPlan";
 
 function App() {
   const AppContent = styled.div`

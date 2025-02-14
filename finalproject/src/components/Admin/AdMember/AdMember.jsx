@@ -18,6 +18,7 @@ const AdMember = () => {
   const [requestUrl, setRequestUrl] = useState(
     "http://localhost/admin/findMembers"
   );
+  const [totalCount, setTotalCount] = useState(0);
   const [members, setMembers] = useState([]);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState(1);
@@ -25,6 +26,8 @@ const AdMember = () => {
   const [error, setError] = useState(1);
   const nextBtnRef = useRef(null);
   const prevBtnRef = useRef(null);
+  const firstBtnRef = useRef(null);
+  const finalBtnRef = useRef(null);
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
@@ -39,23 +42,29 @@ const AdMember = () => {
       })
       .then((response) => {
         setMembers([...response.data]);
+        console.log(response.data);
       })
       .catch(() => {
+        console.log("오류나고있음");
         setError(0);
       });
 
     if (page == 1) {
       prevBtnRef.current.disabled = true;
+      firstBtnRef.current.disabled = true;
     } else {
       prevBtnRef.current.disabled = false;
+      firstBtnRef.current.disabled = false;
     }
   }, [page]);
 
   useEffect(() => {
     if (members.length > 1 && members.length < 10) {
       nextBtnRef.current.disabled = true;
+      finalBtnRef.current.disabled = true;
     } else {
       nextBtnRef.current.disabled = false;
+      finalBtnRef.current.disabled = false;
     }
   }, [members]);
 
@@ -82,6 +91,20 @@ const AdMember = () => {
   };
   const handlePrevPage = () => {
     setPage(page - 1);
+  };
+  const handleFinalPage = () => {
+    let lastPage = Math.ceil(members.length / 10);
+    setPage(lastPage);
+    /*
+      현재 rowbounds 구할 방법이 없음
+
+      페이지 마운트 시 rowbounds 같이 가져오려 했으나 map같은데 같이 담아온다 할 때 데이터 td로 바꿔서 띄우기 애매함
+      V이거 해야됨 
+
+      방법 1. setPage ++ 반복문 돌려서 가게 하기
+      방법 2. 마지막 페이지 버튼 누르면 rowbounds 조회 해오기
+      방법 3. 따로 조회 해와서 state 관리 <= 제일 나은 방법?
+    */
   };
 
   const sortById = () => {
@@ -127,7 +150,7 @@ const AdMember = () => {
 
   const handleCheckbox = (userId) => {
     setCheck(userId);
-    console.log(check);
+    //console.log(check);
   };
   useEffect(() => {}, [check]);
   /*
@@ -178,7 +201,9 @@ const AdMember = () => {
         </MemberTable>
 
         <PageDiv>
-          <PageButton onClick={() => setPage(1)}>처음</PageButton>
+          <PageButton ref={firstBtnRef} onClick={() => setPage(1)}>
+            처음
+          </PageButton>
           <PageButton ref={prevBtnRef} onClick={handlePrevPage}>
             이전
           </PageButton>
@@ -186,7 +211,9 @@ const AdMember = () => {
           <PageButton ref={nextBtnRef} onClick={handleNextPage}>
             다음
           </PageButton>
-          <PageButton>끝</PageButton>
+          <PageButton ref={finalBtnRef} onClick={handleFinalPage}>
+            끝
+          </PageButton>
         </PageDiv>
 
         <br />

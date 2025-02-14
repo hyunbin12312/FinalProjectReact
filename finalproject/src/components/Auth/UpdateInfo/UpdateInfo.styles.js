@@ -33,14 +33,15 @@ export const Btn = styled.button`
   border: none;
   border-radius: 2px;
   margin-top: 20px;
+  margin-bottom: 80px;
 `;
 export const Atag = styled.a`
   margin: 25px;
 `;
 export const Label = styled.label`
   font-weight: 500;
-  font-size: 23px;
-  padding-right: 430px;
+  font-size: 22px;
+  padding-right: 400px;
 `;
 export const StyledP = styled.p`
   font-weight: 600;

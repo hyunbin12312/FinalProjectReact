@@ -41,7 +41,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("refreshToken", refreshToken);
     localStorage.setItem("role", role);
   };
-  console.log(auth);
 
   const logout = () => {
     setAuth({
