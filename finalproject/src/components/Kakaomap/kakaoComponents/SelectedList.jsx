@@ -2,6 +2,12 @@
 import React from "react";
 import styled from "styled-components";
 
+/*
+
+  이 컴포넌트는 플랜 생성 페이지에서의 선택한 장소를 보여주는 컴포넌트입니다.
+
+  */
+
 // 상단 제목 영역: AddListDiv
 const AddListDiv = styled.div`
   font-size: 20px;

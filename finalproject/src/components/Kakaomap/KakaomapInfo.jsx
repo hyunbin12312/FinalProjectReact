@@ -1,5 +1,6 @@
 // KakaoMapInfo.jsx
-import React, { useEffect, useState, useRef } from "react"; // React와 훅들을 import
+import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Map, ZoomControl, useKakaoLoader } from "react-kakao-maps-sdk";
 import { searchPlaces } from "./kakaoFunction/SearchPlaces";
@@ -10,6 +11,9 @@ import PlaceList from "./placeCard/PlaceList";
 import styled from "styled-components";
 import SearchTab from "./kakaoComponents/SearchTab";
 import SelectedList from "./kakaoComponents/SelectedList";
+// CategoryTabs를 onCategoryClick prop을 사용할 수 있도록 수정합니다.
+import CategoryTabs from "./categoryTab/CategoryTabs";
+import { transformPlaces } from "./kakaoFunction/transformPlaces";
 
 // 전체 콘텐츠를 좌우로 배치하는 Flex 컨테이너
 const ContentContainer = styled.div`
@@ -94,6 +98,8 @@ const SubmitButton = styled(StyledButton)`
 function KakaoMapInfo() {
   useKakaoLoader();
 
+  const navi = useNavigate();
+
   // 카카오 지도 SDK가 로드된 후 사용할 장소 검색 객체 생성
   const ps = new window.kakao.maps.services.Places();
 
@@ -130,6 +136,11 @@ function KakaoMapInfo() {
 
   // 선택된 장소들을 저장하는 배열 상태 (새 검색어 입력 시 유지됨)
   const [selectedPlaces, setSelectedPlaces] = useState([]);
+
+  // 선택된 카테고리 상태 (초기값: "" 없음)
+  const [selectedCategory, setSelectedCategory] = useState("");
+  // 카테고리를 추가하고싶다면 여기서 추가함
+  const categories = ["숙박", "음식점", "관광명소"];
 
   // 검색 폼 제출 시 호출되는 함수
   const handleSearch = (e) => {
@@ -171,7 +182,7 @@ function KakaoMapInfo() {
   };
 
   // 초기화 버튼 클릭 시 호출되는 함수
-  // 이 함수는 검색 결과, 페이지 등만 초기화하고, 선택된 장소와 마커는 유지함.
+  // (검색 결과, 페이지 등만 초기화하고, 선택된 장소와 마커는 유지)
   const handleReset = () => {
     reset({
       setInputPlace,
@@ -184,7 +195,6 @@ function KakaoMapInfo() {
       clearMarkers: () => {}, // dummy
       infowindowRef,
     });
-    // 선택된 장소는 그대로 유지
   };
 
   // 지도에 표시된 마커들을 모두 제거하는 함수 (검색 결과 관련 마커 제거용)
@@ -264,14 +274,17 @@ function KakaoMapInfo() {
     console.log("장소 클릭:", place);
   };
 
-  // 선택한 모든 객체가 담긴 배열 (모든 정보)
+  // 선택한 모든 객체가 담긴 배열
   const allPlaceInfo = selectedPlaces.map(
-    ({ name, address, category, phone, detailLink }) => ({
-      name,
-      address,
+    ({ name, address, category, phone, detailLink, x, y }, index) => ({
+      placeName: name,
+      placeAddress: address,
       category,
       phone,
-      detailLink,
+      linkUrl: detailLink,
+      lat: y,
+      lng: x,
+      planOrder: index + 1,
     })
   );
 
@@ -280,14 +293,42 @@ function KakaoMapInfo() {
   // Submit 버튼 클릭 시, 선택된 장소 배열을 백엔드로 전송하는 함수 (예시)
   const handleSubmit = async () => {
     try {
-      // 실제 백엔드 URL로 변경해야 합니다.
-      const response = await axios.post("/api/submitSelectedPlaces", {
-        selectedPlaces,
+      const response = await axios.post("http://localhost/map", {
+        travelPlan: allPlaceInfo,
       });
       console.log("Submit 성공:", response.data);
+      navi("/map/list");
+      alert("여행플랜 저장에 성공하였습니다!");
     } catch (error) {
-      console.error("Submit 에러:", error);
+      if (error.response && error.response.data) {
+        const errorMsg = error.response.data;
+        alert(errorMsg);
+      } else {
+        alert("예상치 못한 오류가 발생했습니다.");
+      }
     }
+  };
+
+  // 해당 카테고리명을 검색어로 사용하여 searchPlaces 함수를 실행
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+    setInputPlace(category);
+    setIsEnd(false);
+    searchPlaces({
+      e: { preventDefault: () => {} }, // 더미데이터를 보내 이벤트를 실행시킴(새로고침방지)
+      inputPlace: category,
+      setResults,
+      setPageNumber,
+      setIsEnd,
+      setVisiblePlaceCount,
+      clearMarkers: () => {}, // dummy: 기존 마커 유지
+      infowindowRef,
+      ps,
+      displayMarker: () => {}, // dummy: 기존 마커 유지
+      placesSearchCB,
+      mapInstance,
+    });
+    //setInputPlace("");
   };
 
   return (
@@ -303,17 +344,16 @@ function KakaoMapInfo() {
                 handleReset={handleReset}
               />
             </SearchAndButtonsContainer>
+            {/* CategoryTabs에 onCategoryClick prop을 추가하여 탭 클릭 시 handleCategoryClick 실행 */}
+            <CategoryTabs
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory}
+              setInputPlace={setInputPlace}
+              onCategoryClick={handleCategoryClick}
+            />
             <PlaceList
-              places={results.slice(0, visiblePlaceCount).map((place) => ({
-                name: place.place_name,
-                address: place.road_address_name || place.address_name,
-                category: place.category_group_name,
-                phone: place.phone,
-                detailLink: `https://map.kakao.com/link/map/${place.id}`,
-                imageUrl: place.image_url,
-                y: place.y,
-                x: place.x,
-              }))}
+              places={transformPlaces(results, visiblePlaceCount)}
               selectedPlaces={selectedPlaces}
               onToggle={handleTogglePlace}
               onItemClick={handleItemClick}

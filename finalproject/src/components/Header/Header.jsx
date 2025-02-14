@@ -30,7 +30,7 @@ const HeaderComponent = () => {
         <MenuList>
           <MenuItem onClick={() => goTo("/")}> 메인 </MenuItem>
           <MenuItem onClick={() => goTo("/map")}> 지도보기</MenuItem>
-          <MenuItem>메뉴 2</MenuItem>
+          <MenuItem onClick={() => goTo("/map/list")}>내 플랜 보기</MenuItem>
           <MenuItem>메뉴 3</MenuItem>
         </MenuList>
       </Menu>
