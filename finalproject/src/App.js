@@ -11,6 +11,7 @@ import KakaoMapInfo from "./components/Kakaomap/KakaomapInfo";
 import Header from "./components/Header/Header";
 import Join from "./components/Auth/Join/Join";
 import MyPage from "./components/Auth/MyPage/MyPage";
+import UpdateInfo from "./components/Auth/UpdateInfo/UpdateInfo";
 import AdMain from "./components/Admin/AdMain/AdMain";
 import AdMember from "./components/Admin/AdMember/AdMember";
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
           <Route path="/myPage" element={<MyPage />} />
+          <Route path="/updateInfo" element={<UpdateInfo />} />
           <Route path="/admin" element={<AdMain />} />
           <Route path="/admin/findMember" element={<AdMember />} />
         </Routes>

@@ -6,27 +6,31 @@ import {
   Input,
   Btn,
   Label,
+  StyledP,
+  StyledSpan,
 } from "./MyPage.styles";
 import axios from "axios";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 const MyPage = () => {
   const navi = useNavigate();
   const goTo = (path) => {
     navi(path);
   };
-  const { auth } = useContext;
+  const { auth } = useContext(AuthContext);
 
   return (
     <>
       <StyledDiv>
         <CommonContainer>
           <Title>마이페이지</Title>
-          <Input placeholder="ID" disabled></Input>
-          <Input placeholder="E-Mail" disabled></Input>
+          <StyledP>
+            '<StyledSpan>{auth.username}</StyledSpan>'님 안녕하세요
+          </StyledP>
           <Btn>내가 만든 리스트</Btn>
-          <Btn>정보 수정</Btn>
+          <Btn onClick={() => goTo("/updateInfo")}>정보 수정</Btn>
           <Btn>회원 탈퇴</Btn>
         </CommonContainer>
       </StyledDiv>

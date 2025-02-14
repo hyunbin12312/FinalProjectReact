@@ -49,31 +49,29 @@ const Join = () => {
               onChange={(e) => setUserId(e.target.value)}
               value={userId}
               type="text"
-              placeholder="4-20자 이내 영어, 숫자 입력"
+              placeholder="4~20자 이내 영문, 숫자만 입력해주세요."
               required
             />
             <br />
-
-            <Label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*Password</Label>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <Label>*Password</Label>
             <br />
             <Input
               onChange={(e) => setUserPwd(e.target.value)}
               value={userPwd}
               type="password"
-              placeholder="4-20자 이내 영어, 숫자 입력"
+              placeholder="4~20자 이내 영문, 숫자만 입력해주세요."
               required
             />
-
             <Label>&nbsp;&nbsp;&nbsp;*E-Mail</Label>
             <br />
             <Input
               onChange={(e) => setEmail(e.target.value)}
               value={email}
               type="text"
-              placeholder="example@kh.com"
+              placeholder="@를 포함한 정확한 메일을 입력해주세요. ex: user11@test.com"
               required
             />
-
             <p>**양식에 맞게 모든 항목 입력해야 합니다.</p>
             <Btn type="submit">회원가입 완료</Btn>
           </Form>

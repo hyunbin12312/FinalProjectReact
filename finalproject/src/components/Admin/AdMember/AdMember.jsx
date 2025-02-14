@@ -11,7 +11,8 @@ import {
   CheckBox,
 } from "./AdMember.styles";
 import axios from "axios";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const AdMember = () => {
   const [requestUrl, setRequestUrl] = useState(
@@ -21,12 +22,17 @@ const AdMember = () => {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState(1);
   const [check, setCheck] = useState([]);
+  const [error, setError] = useState(1);
   const nextBtnRef = useRef(null);
   const prevBtnRef = useRef(null);
+  const { auth } = useContext(AuthContext);
 
   useEffect(() => {
     axios
       .get(requestUrl, {
+        headers: {
+          Authorization: `Bearer ${auth.accessToken}`,
+        },
         params: {
           page: page,
         },
@@ -34,8 +40,8 @@ const AdMember = () => {
       .then((response) => {
         setMembers([...response.data]);
       })
-      .catch((error) => {
-        alert("회원 정보가 없습니다.");
+      .catch(() => {
+        setError(0);
       });
 
     if (page == 1) {
@@ -56,6 +62,9 @@ const AdMember = () => {
   useEffect(() => {
     axios
       .get(requestUrl, {
+        headers: {
+          Authorization: `Bearer ${auth.accessToken}`,
+        },
         params: {
           page: page,
         },
@@ -63,8 +72,8 @@ const AdMember = () => {
       .then((response) => {
         setMembers([...response.data]);
       })
-      .catch((error) => {
-        alert("접근 권한이 없습니다.");
+      .catch(() => {
+        setError(0);
       });
   }, [requestUrl]);
 
@@ -113,6 +122,7 @@ const AdMember = () => {
   };
   const findAdmin = () => {
     setRequestUrl("http://localhost/admin/findAdmin");
+    setPage(1);
   };
 
   const handleCheckbox = (userId) => {
@@ -139,26 +149,36 @@ const AdMember = () => {
             <StyledTh onClick={sortByStatus}>활동상태↕</StyledTh>
             <StyledTh onClick={sortByDate}>가입일↕</StyledTh>
           </thead>
-
-          {members.map((member) => (
-            <tbody key={member.userId}>
+          {error != 0 ? (
+            <>
+              {members.map((member) => (
+                <tbody key={member.userId}>
+                  <StyledTd>
+                    <CheckBox
+                      type="checkbox"
+                      checked={check.includes(member.userId)}
+                      onChange={() => handleCheckbox(member.userId)}
+                    />
+                  </StyledTd>
+                  <StyledTd>{member.userId}</StyledTd>
+                  <StyledTd>{member.email}</StyledTd>
+                  <StyledTd>{member.role.split("_")[1]}</StyledTd>
+                  <StyledTd>{member.status}</StyledTd>
+                  <StyledTd>{member.enrollDate}</StyledTd>
+                </tbody>
+              ))}
+            </>
+          ) : (
+            <tbody>
               <StyledTd>
-                <CheckBox
-                  type="checkbox"
-                  checked={check.includes(member.userId)}
-                  onChange={() => handleCheckbox(member.userId)}
-                />
+                <h4>조회 결과가 없습니다.</h4>
               </StyledTd>
-              <StyledTd>{member.userId}</StyledTd>
-              <StyledTd>{member.email}</StyledTd>
-              <StyledTd>{member.role.split("_")[1]}</StyledTd>
-              <StyledTd>{member.status}</StyledTd>
-              <StyledTd>{member.enrollDate}</StyledTd>
             </tbody>
-          ))}
+          )}
         </MemberTable>
 
         <PageDiv>
+          <PageButton onClick={() => setPage(1)}>처음</PageButton>
           <PageButton ref={prevBtnRef} onClick={handlePrevPage}>
             이전
           </PageButton>
@@ -166,16 +186,16 @@ const AdMember = () => {
           <PageButton ref={nextBtnRef} onClick={handleNextPage}>
             다음
           </PageButton>
+          <PageButton>끝</PageButton>
         </PageDiv>
 
         <br />
         <Button>메일 발송</Button>
         <Button>회원 정지</Button>
         <Button>정지 해제</Button>
-        <h6>*다중 선택 가능합니다.</h6>
         <br />
         <Button onClick={findAdmin}>관리자 목록 보기</Button>
-        <Button>돌아가기</Button>
+        <Button onClick={sortById}>돌아가기</Button>
       </WrapDiv>
     </>
   );
