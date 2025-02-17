@@ -30,16 +30,20 @@ export const Button = styled.button`
   }
 `;
 export const PageDiv = styled.div`
-  margin: 40px;
+  width: 90%;
+  text-align: center;
 `;
 export const PageButton = styled.button`
   width: 100px;
-  margin-left: 60px;
+  margin: 25px;
 `;
 export const PageNo = styled.p`
   font-weight: 700;
   font-size: 20px;
   display: inline;
-  margin-left: 60px;
 `;
 export const CheckBox = styled.input``;
+
+export const StyledTbody = styled.tbody`
+  background-color: ${(props) => (props.checked ? "lightblue" : "transparent")};
+`;

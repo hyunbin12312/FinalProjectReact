@@ -9,6 +9,7 @@ import {
   PageNo,
   Button,
   CheckBox,
+  StyledTbody,
 } from "./AdMember.styles";
 import axios from "axios";
 import { useRef, useEffect, useState, useContext } from "react";
@@ -18,11 +19,10 @@ const AdMember = () => {
   const [requestUrl, setRequestUrl] = useState(
     "http://localhost/admin/findMembers"
   );
-  const [totalCount, setTotalCount] = useState(0);
   const [members, setMembers] = useState([]);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState(1);
-  const [check, setCheck] = useState([]);
+  const [arr, setArr] = useState([]);
   const [error, setError] = useState(1);
   const nextBtnRef = useRef(null);
   const prevBtnRef = useRef(null);
@@ -42,14 +42,12 @@ const AdMember = () => {
       })
       .then((response) => {
         setMembers([...response.data]);
-        console.log(response.data);
       })
       .catch(() => {
-        console.log("오류나고있음");
         setError(0);
       });
 
-    if (page == 1) {
+    if (page === 1) {
       prevBtnRef.current.disabled = true;
       firstBtnRef.current.disabled = true;
     } else {
@@ -86,6 +84,7 @@ const AdMember = () => {
       });
   }, [requestUrl]);
 
+  // 페이지 이동 기능
   const handleNextPage = () => {
     setPage(page + 1);
   };
@@ -93,20 +92,21 @@ const AdMember = () => {
     setPage(page - 1);
   };
   const handleFinalPage = () => {
-    let lastPage = Math.ceil(members.length / 10);
-    setPage(lastPage);
-    /*
-      현재 rowbounds 구할 방법이 없음
-
-      페이지 마운트 시 rowbounds 같이 가져오려 했으나 map같은데 같이 담아온다 할 때 데이터 td로 바꿔서 띄우기 애매함
-      V이거 해야됨 
-
-      방법 1. setPage ++ 반복문 돌려서 가게 하기
-      방법 2. 마지막 페이지 버튼 누르면 rowbounds 조회 해오기
-      방법 3. 따로 조회 해와서 state 관리 <= 제일 나은 방법?
-    */
+    axios
+      .get("http://localhost/admin/findTotalCount", {
+        headers: {
+          Authorization: `Bearer ${auth.accessToken}`,
+        },
+      })
+      .then((response) => {
+        setPage(Math.ceil(response.data / 10));
+      })
+      .catch(() => {
+        setError(0);
+      });
   };
 
+  // 정렬 기능
   const sortById = () => {
     if (sort === 1) {
       setRequestUrl("http://localhost/admin/findMembersAsc");
@@ -148,15 +148,59 @@ const AdMember = () => {
     setPage(1);
   };
 
-  const handleCheckbox = (userId) => {
-    setCheck(userId);
-    //console.log(check);
+  // 회원 행 선택 기능
+  const handleCheck = (e) => {
+    if (e.target.checked) {
+      setArr((arr) => [...arr, e.target.value]);
+    } else {
+      const ee = arr.filter((el) => {
+        return el !== e.target.value;
+      });
+      setArr([...ee]);
+    }
   };
-  useEffect(() => {}, [check]);
-  /*
-    1. 체크박스 행 선택
-    2. authoricate, 정보수정, 탈퇴 마무리
-  */
+
+  const blockUser = () => {
+    if (
+      window.confirm(arr.length > 0 && "선택된 회원을 비활성화 하시겠어요?")
+    ) {
+      axios
+        .post("http://localhost/admin/blockUser", arr, {
+          headers: {
+            Authorization: `Bearer ${auth.accessToken}`,
+          },
+        })
+        .then(() => {
+          alert("선택 회원 비활성화");
+          setArr([]);
+        })
+        .catch(() => {
+          alert("오류 발생. 다시 시도 해주세요.");
+        });
+    }
+    // 작업 처리 후 체크 풀어야 됨
+  };
+
+  const unblockUser = () => {
+    if (window.confirm(arr.length > 0 && "비활성화를 해제 하시겠어요?")) {
+      axios
+        .post("http://localhost/admin/unblockUser", arr, {
+          headers: {
+            Authorization: `Bearer ${auth.accessToken}`,
+          },
+        })
+        .then(() => {
+          alert("복구 완료");
+          setArr([]);
+        })
+        .catch(() => {
+          alert("오류 발생. 다시 시도 해주세요.");
+        });
+    }
+  };
+
+  // 메일링
+  const mailForAll = () => {};
 
   return (
     <>
@@ -172,15 +216,19 @@ const AdMember = () => {
             <StyledTh onClick={sortByStatus}>활동상태↕</StyledTh>
             <StyledTh onClick={sortByDate}>가입일↕</StyledTh>
           </thead>
-          {error != 0 ? (
+          {error !== 0 ? (
             <>
               {members.map((member) => (
-                <tbody key={member.userId}>
+                <StyledTbody
+                  key={member.userId}
+                  //checked={checkedItems[member.userId]}
+                >
                   <StyledTd>
                     <CheckBox
                       type="checkbox"
-                      checked={check.includes(member.userId)}
-                      onChange={() => handleCheckbox(member.userId)}
+                      //checked={checkedItems}
+                      onChange={handleCheck}
+                      value={member.userId}
                     />
                   </StyledTd>
                   <StyledTd>{member.userId}</StyledTd>
@@ -188,7 +236,7 @@ const AdMember = () => {
                   <StyledTd>{member.role.split("_")[1]}</StyledTd>
                   <StyledTd>{member.status}</StyledTd>
                   <StyledTd>{member.enrollDate}</StyledTd>
-                </tbody>
+                </StyledTbody>
               ))}
             </>
           ) : (
@@ -217,9 +265,10 @@ const AdMember = () => {
         </PageDiv>
 
         <br />
-        <Button>메일 발송</Button>
-        <Button>회원 정지</Button>
-        <Button>정지 해제</Button>
+        <Button onClick={mailForAll}>전체 메일 발송</Button>
+        <Button>선택 메일 발송</Button>
+        <Button onClick={blockUser}>회원 차단</Button>
+        <Button onClick={unblockUser}>차단 해제</Button>
         <br />
         <Button onClick={findAdmin}>관리자 목록 보기</Button>
         <Button onClick={sortById}>돌아가기</Button>

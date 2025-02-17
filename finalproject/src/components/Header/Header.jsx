@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { HeaderContainer, Menu, MenuList, MenuItem } from "./HeaderStyled";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import axios from "axios";
 
 const HeaderComponent = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -16,6 +17,20 @@ const HeaderComponent = () => {
       logout();
       alert("로그아웃 되었습니다.");
       goTo("/login");
+      // axios
+      //   .delete("http://localhost/member/deleteRefToken", {
+      //     headers: {
+      //       Authorization: `Bearer ${auth.accessToken}`,
+      //     },
+      //     params: {
+      //       username: auth.username,
+      //     },
+      //   })
+      //   .then(() => {
+      //   })
+      //   .catch(() => {
+      //     alert("오류 발생! 다시 시도해주세요.");
+      //   });
     }
   };
 
