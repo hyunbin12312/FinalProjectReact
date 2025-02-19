@@ -31,6 +31,7 @@ const AdMember = () => {
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
+    /* 회원관리 컴포넌트 마운트 시 id 역순 렌더링 */
     axios
       .get(requestUrl, {
         headers: {
@@ -67,6 +68,10 @@ const AdMember = () => {
   }, [members]);
 
   useEffect(() => {
+    /* 
+    정렬 기준이 바뀔 때 마다 서버에 요청을 보내게 되므로
+    중복코드를 줄이기 위해 requestUrl 변수화    
+    */
     axios
       .get(requestUrl, {
         headers: {
@@ -84,7 +89,9 @@ const AdMember = () => {
       });
   }, [requestUrl]);
 
-  // 페이지 이동 기능
+  /* 
+  페이지 이동 기능. 총 rowBounds 수 구하기 위해 finalPage 버튼 클릭 시 get요청
+  */
   const handleNextPage = () => {
     setPage(page + 1);
   };
@@ -106,7 +113,10 @@ const AdMember = () => {
       });
   };
 
-  // 정렬 기능
+  /* 
+    정렬기능 requestUrl 대입 해주는 함수들
+    하나의 버튼으로 순서를 계속 바꿔주기 위해 Sort State로 관리
+  */
   const sortById = () => {
     if (sort === 1) {
       setRequestUrl("http://localhost/admin/findMembersAsc");
@@ -148,7 +158,10 @@ const AdMember = () => {
     setPage(1);
   };
 
-  // 회원 행 선택 기능
+  /* 
+    회원 행 선택 기능
+    선택된 회원목록은 배열로 넘어가게 됨
+  */
   const handleCheck = (e) => {
     if (e.target.checked) {
       setArr((arr) => [...arr, e.target.value]);
@@ -178,7 +191,7 @@ const AdMember = () => {
           alert("오류 발생. 다시 시도 해주세요.");
         });
     }
-    // 작업 처리 후 체크 풀어야 됨
+    // 작업 처리 후 체크 풀어야 됨 => State 바뀔텐데 재랜더링이 안된다?
   };
 
   const unblockUser = () => {

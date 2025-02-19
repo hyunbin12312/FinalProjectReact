@@ -7,13 +7,24 @@ import {
   Btn,
   Label,
 } from "./Join.styles";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 
 const Join = () => {
   const [userId, setUserId] = useState("");
   const [userPwd, setUserPwd] = useState("");
   const [email, setEmail] = useState("");
+  const { auth } = useContext(AuthContext);
+
+  const navi = useNavigate();
+  const goTo = (path) => {
+    navi(path);
+  };
+  if (auth.isAuthenticated === true) {
+    goTo("/");
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -21,12 +21,7 @@ const AdLayout = () => {
   useEffect(() => {
     if (auth.role != "ROLE_ADMIN") {
       goTo("/");
-      alert("접근 권한이 없습니다.");
     }
-    /*
-      버튼으로 접속은 마운트 되기 전에 돌아가지만
-      url 접속은 화면 잠깐 보임 => 이유? 
-    */
   }, []);
 
   return (

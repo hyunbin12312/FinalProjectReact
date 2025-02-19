@@ -14,23 +14,23 @@ const HeaderComponent = () => {
 
   const handleLogout = () => {
     if (window.confirm("로그아웃 하시겠어요?")) {
-      logout();
-      alert("로그아웃 되었습니다.");
-      goTo("/login");
-      // axios
-      //   .delete("http://localhost/member/deleteRefToken", {
-      //     headers: {
-      //       Authorization: `Bearer ${auth.accessToken}`,
-      //     },
-      //     params: {
-      //       username: auth.username,
-      //     },
-      //   })
-      //   .then(() => {
-      //   })
-      //   .catch(() => {
-      //     alert("오류 발생! 다시 시도해주세요.");
-      //   });
+      axios
+        .delete("http://localhost/member/deleteRefToken", {
+          headers: {
+            Authorization: `Bearer ${auth.accessToken}`,
+          },
+          data: {
+            username: auth.username,
+          },
+        })
+        .then(() => {
+          logout();
+          alert("로그아웃 되었습니다.");
+          goTo("/login");
+        })
+        .catch(() => {
+          alert("오류 발생! 다시 시도해주세요.");
+        });
     }
   };
 

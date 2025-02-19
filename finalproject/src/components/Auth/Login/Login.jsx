@@ -15,13 +15,15 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [userId, setUserId] = useState("");
   const [userPwd, setUserPwd] = useState("");
+  const { auth, login } = useContext(AuthContext);
 
   const navi = useNavigate();
   const goTo = (path) => {
     navi(path);
   };
-
-  const { login } = useContext(AuthContext);
+  if (auth.isAuthenticated === true) {
+    goTo("/");
+  }
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -37,7 +39,7 @@ const Login = () => {
         alert("로그인 성공!");
         window.location = "/";
       })
-      .catch((error) => {
+      .catch(() => {
         alert("로그인 실패, 입력을 확인하세요");
       });
   };
