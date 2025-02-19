@@ -35,10 +35,11 @@ const ModalForMail = ({ isOpen, onClose, reciever }) => {
           }
         )
         .then(() => {
-          console.log("성공");
+          alert("메일 전송 성공!");
+          onClose();
         })
         .catch(() => {
-          console.log("실패");
+          alert("오류, 메일 전송 실패.");
         });
     }
   };
@@ -67,7 +68,7 @@ const ModalForMail = ({ isOpen, onClose, reciever }) => {
         <br />
         <br />
         <Button onClick={handleSubmit}>발송</Button>
-        <Button onClick={onClose}>취소</Button>
+        <Button onClick={onClose}>닫기</Button>
       </ModalContent>
     </Background>
   );
