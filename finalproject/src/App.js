@@ -6,7 +6,6 @@ import Login from "./components/Auth/Login/Login";
 import Main from "./components/Main/Main";
 import styled from "styled-components";
 import KakaoMapInfo from "./components/Kakaomap/KakaomapInfo";
-import KakaoMapIn from "./components/Kakaomap/Kakaomap";
 import Header from "./components/Header/Header";
 import Join from "./components/Auth/Join/Join";
 import MyPage from "./components/Auth/MyPage/MyPage";
