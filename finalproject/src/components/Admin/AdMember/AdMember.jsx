@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import { useRef, useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import ModalForMail from "./ModalForMail";
 
 const AdMember = () => {
   const [requestUrl, setRequestUrl] = useState(
@@ -24,11 +25,12 @@ const AdMember = () => {
   const [sort, setSort] = useState(1);
   const [arr, setArr] = useState([]);
   const [error, setError] = useState(1);
+  const [open, setOpen] = useState(false);
+  const { auth } = useContext(AuthContext);
   const nextBtnRef = useRef(null);
   const prevBtnRef = useRef(null);
   const firstBtnRef = useRef(null);
   const finalBtnRef = useRef(null);
-  const { auth } = useContext(AuthContext);
 
   useEffect(() => {
     /* 회원관리 컴포넌트 마운트 시 id 역순 렌더링 */
@@ -213,7 +215,14 @@ const AdMember = () => {
   };
 
   // 메일링
-  const mailForAll = () => {};
+  const mailForAll = () => {
+    // 전체선택 어떻게..?
+    setOpen(true);
+  };
+
+  const mailForUser = () => {
+    setOpen(true);
+  };
 
   return (
     <>
@@ -232,14 +241,10 @@ const AdMember = () => {
           {error !== 0 ? (
             <>
               {members.map((member) => (
-                <StyledTbody
-                  key={member.userId}
-                  //checked={checkedItems[member.userId]}
-                >
+                <StyledTbody key={member.userId}>
                   <StyledTd>
                     <CheckBox
                       type="checkbox"
-                      //checked={checkedItems}
                       onChange={handleCheck}
                       value={member.userId}
                     />
@@ -279,13 +284,17 @@ const AdMember = () => {
 
         <br />
         <Button onClick={mailForAll}>전체 메일 발송</Button>
-        <Button>선택 메일 발송</Button>
+        <Button onClick={mailForUser}>선택 메일 발송</Button>
         <Button onClick={blockUser}>회원 차단</Button>
         <Button onClick={unblockUser}>차단 해제</Button>
         <br />
         <Button onClick={findAdmin}>관리자 목록 보기</Button>
         <Button onClick={sortById}>돌아가기</Button>
       </WrapDiv>
+
+      <ModalForMail isOpen={open} onClose={() => setOpen(false)} reciever={arr}>
+        <></>
+      </ModalForMail>
     </>
   );
 };
