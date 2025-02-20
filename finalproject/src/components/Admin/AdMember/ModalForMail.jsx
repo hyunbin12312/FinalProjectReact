@@ -38,8 +38,8 @@ const ModalForMail = ({ isOpen, onClose, reciever }) => {
           alert("메일 전송 성공!");
           onClose();
         })
-        .catch(() => {
-          alert("오류, 메일 전송 실패.");
+        .catch((error) => {
+          alert("오류 발생. 수신자를 선택해주세요.");
         });
     }
   };
