@@ -12,6 +12,7 @@ import {
   PlaceInfo,
   EditButton,
   DeleteButton,
+  AddMemoButton,
 } from "./ViewMyPlanStyles";
 import CustomModal from "./CustomModal";
 import SearchTab from "../kakaoComponents/SearchTab";
@@ -58,7 +59,7 @@ const ViewMyPlan = () => {
 
   // 여행플랜을 불러오는 useEffect
   useEffect(() => {
-    if (!auth.accessToken) return;
+    if (!auth.accessToken) return; // accessToken 없으면 돌려보냄
     axios
       .get("http://localhost/map/list", {
         params: { userId: auth.username },
@@ -332,6 +333,8 @@ const ViewMyPlan = () => {
                       >
                         수정하기
                       </EditButton>
+                      <AddMemoButton>메모작성</AddMemoButton>
+
                       <DeleteButton
                         onClick={() => handleDeletePlace(place, planCode)}
                       >

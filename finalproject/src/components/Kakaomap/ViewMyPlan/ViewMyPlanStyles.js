@@ -66,6 +66,25 @@ export const PlaceInfo = styled.div`
 /* 수정하기 버튼 */
 export const EditButton = styled.button`
   background-color: #007bff;
+  margin-right: 5px;
+  margin-left: 5px;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
+/* 수정하기 버튼 */
+export const AddMemoButton = styled.button`
+  background-color: #007bff;
+  margin-right: 5px;
+  margin-left: 5px;
   color: #fff;
   border: none;
   padding: 6px 12px;
@@ -86,7 +105,8 @@ export const ModalContent = styled.div`
 /* 삭제버튼 */
 export const DeleteButton = styled.button`
   padding: 8px 12px;
-  margin-left: 10px;
+  margin-right: 5px;
+  margin-left: 5px;
   background-color: #ff4d4f;
   color: #fff;
   border: none;
