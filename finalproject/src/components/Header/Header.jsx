@@ -31,6 +31,11 @@ const HeaderComponent = () => {
         .catch(() => {
           alert("오류 발생! 다시 시도해주세요.");
         });
+
+      // logout();
+
+      // alert("로그아웃 되었습니다.");
+      // goTo("/login");
     }
   };
 
@@ -54,6 +59,7 @@ const HeaderComponent = () => {
             </>
           ) : (
             <>
+              <MenuItem onClick={() => goTo("/join")}>회원가입</MenuItem>
               <MenuItem onClick={() => goTo("/login")}>로그인</MenuItem>
             </>
           )}

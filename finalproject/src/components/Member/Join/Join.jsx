@@ -80,7 +80,7 @@ const Join = () => {
               onChange={(e) => setEmail(e.target.value)}
               value={email}
               type="text"
-              placeholder="@를 포함한 정확한 메일을 입력해주세요. ex: user11@test.com"
+              placeholder="example@test.com"
               required
             />
             <p>**양식에 맞게 모든 항목 입력해야 합니다.</p>

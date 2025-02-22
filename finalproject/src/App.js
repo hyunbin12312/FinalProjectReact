@@ -2,19 +2,19 @@ import "./App.css";
 
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./components/context/AuthContext";
-import Login from "./components/Auth/Login/Login";
-import KakaoMap from "./components/Kakaomap/Kakaomap";
-import Kakaomap from "./components/Kakaomap/Kakaomap";
+import Login from "./components/Member/Login/Login";
 import Main from "./components/Main/Main";
 import styled from "styled-components";
 import KakaoMapInfo from "./components/Kakaomap/KakaomapInfo";
 import Header from "./components/Header/Header";
-import Join from "./components/Auth/Join/Join";
-import MyPage from "./components/Auth/MyPage/MyPage";
-import UpdateInfo from "./components/Auth/UpdateInfo/UpdateInfo";
+import Join from "./components/Member/Join/Join";
+import MyPage from "./components/Member/MyPage/MyPage";
+import UpdateInfo from "./components/Member/UpdateInfo/UpdateInfo";
 import AdMain from "./components/Admin/AdMain/AdMain";
 import AdMember from "./components/Admin/AdMember/AdMember";
 import ViewMyPlan from "./components/Kakaomap/ViewMyPlan/ViewMyPlan";
+import FindInfo from "./components/Member/FindInfo/FindInfo";
+import FindPwd from "./components/Member/FindInfo/FindPwd";
 
 function App() {
   const AppContent = styled.div`
@@ -35,6 +35,8 @@ function App() {
           <Route path="/updateInfo" element={<UpdateInfo />} />
           <Route path="/admin" element={<AdMain />} />
           <Route path="/admin/findMember" element={<AdMember />} />
+          <Route path="/findInfo" element={<FindInfo />} />
+          <Route path="/findPwd" element={<FindPwd />} />
         </Routes>
       </AuthProvider>
 

@@ -18,7 +18,31 @@ const ModalForMail = ({ isOpen, onClose, reciever }) => {
   if (!isOpen) return null;
 
   const handleSubmit = () => {
+    //console.log(reciever);
     if (window.confirm("메일을 발송하시겠어요?")) {
+      if (reciever.includes("전체 메일")) {
+        axios
+          .post(
+            "http://localhost/admin/mailForAll",
+            {
+              sender: auth.username,
+              mailTitle: mailTitle,
+              mailContent: mailContent,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${auth.accessToken}`,
+              },
+            }
+          )
+          .then(() => {
+            alert("전체 메일 전송 성공!");
+            onClose();
+          })
+          .catch(() => {
+            alert("오류 발생, 다시 시도해주세요.");
+          });
+      }
       axios
         .post(
           "http://localhost/admin/mailForUser",
@@ -39,7 +63,7 @@ const ModalForMail = ({ isOpen, onClose, reciever }) => {
           onClose();
         })
         .catch((error) => {
-          alert("오류 발생. 수신자를 선택해주세요.");
+          alert("오류 발생, 다시 시도해주세요(수신자 없다면 1명 이상 선택).");
         });
     }
   };

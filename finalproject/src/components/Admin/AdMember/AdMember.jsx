@@ -33,7 +33,7 @@ const AdMember = () => {
   const finalBtnRef = useRef(null);
 
   useEffect(() => {
-    /* 회원관리 컴포넌트 마운트 시 id 역순 렌더링 */
+    /* 마운트 시 id 역순 정렬 */
     axios
       .get(requestUrl, {
         headers: {
@@ -60,7 +60,7 @@ const AdMember = () => {
   }, [page]);
 
   useEffect(() => {
-    if (members.length > 1 && members.length < 10) {
+    if (members.length > 0 && members.length < 10) {
       nextBtnRef.current.disabled = true;
       finalBtnRef.current.disabled = true;
     } else {
@@ -101,6 +101,8 @@ const AdMember = () => {
     setPage(page - 1);
   };
   const handleFinalPage = () => {
+    nextBtnRef.current.disabled = true;
+    finalBtnRef.current.disabled = true;
     axios
       .get("http://localhost/admin/findTotalCount", {
         headers: {
@@ -216,7 +218,9 @@ const AdMember = () => {
 
   // 메일링
   const mailForAll = () => {
-    // 전체선택 어떻게..?
+    // 전체선택 방법은 또 조회뿐..?
+    setArr([]);
+    setArr(["전체 메일"]);
     setOpen(true);
   };
 

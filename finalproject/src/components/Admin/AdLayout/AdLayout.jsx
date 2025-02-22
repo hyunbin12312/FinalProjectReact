@@ -44,12 +44,6 @@ const AdLayout = () => {
               <StyledLi onClick={() => goTo("/admin/findMember")}>
                 회원 관리
               </StyledLi>
-              <BannerMargin />
-              <StyledLi>리스트 관리</StyledLi>
-              <BannerMargin />
-              <StyledLi>배너 관리</StyledLi>
-              <BannerMargin />
-              <StyledLi>팝업 관리</StyledLi>
             </ul>
           </MenuBox>
         </AdBanner>
