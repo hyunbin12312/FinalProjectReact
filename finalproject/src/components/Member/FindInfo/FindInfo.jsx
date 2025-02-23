@@ -26,7 +26,7 @@ const FindInfo = () => {
         email: email,
       })
       .then((response) => {
-        alert("ID: " + response);
+        alert("ID: " + response.data);
       })
       .catch(() => {
         alert("없는 정보 입니다.");

@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 const FindPwd = () => {
   const [userId, setUserId] = useState("");
   const [email, setEmail] = useState("");
+  const [randomNum, setRandomNum] = useState("");
   const [isSuccess, setIsSuccess] = useState(0);
   const navi = useNavigate();
   const goTo = (path) => {
@@ -32,11 +33,26 @@ const FindPwd = () => {
         userId: userId,
         email: email,
       })
-      .then(() => {
+      .then((response) => {
         setIsSuccess(1);
+        alert(response.data);
         // 타이머 설정
         // id랑 email 일치하지 않으면 에러
         // submit 시 메일 인증
+      })
+      .catch(() => {
+        alert("계정 정보를 찾을 수 없습니다.");
+      });
+  };
+
+  const handleMatch = () => {
+    axios
+      .post("http://localhost/member/matchRandomNum", {
+        userId: userId,
+        randomNum: randomNum,
+      })
+      .then(() => {
+        setIsSuccess(2);
       });
   };
 
@@ -71,12 +87,24 @@ const FindPwd = () => {
             </Form>
           ) : isSuccess === 1 ? (
             <>
-              <p>메일인증~</p>
+              <StyledP>Email로 받으신 인증번호를 입력해주세요.</StyledP>
+              <Input
+                onChange={(e) => {
+                  setRandomNum(e.target.value);
+                }}
+                value={randomNum}
+                placeholder="숫자 4자리 입력"
+              ></Input>
+              <Btn onClick={handleMatch}>입력 완료</Btn>
             </>
           ) : (
             <>
               <StyledP>변경하실 비밀번호를 입력해주세요.</StyledP>
-              <Input></Input>
+              <Input
+                required
+                placeholder="4~20자 이내 영문, 숫자만 입력해주세요."
+                type="password"
+              ></Input>
               <Btn>변경 완료</Btn>
             </>
           )}

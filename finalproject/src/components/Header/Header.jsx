@@ -14,28 +14,23 @@ const HeaderComponent = () => {
 
   const handleLogout = () => {
     if (window.confirm("로그아웃 하시겠어요?")) {
+      logout();
+      alert("로그아웃 되었습니다.");
+      goTo("/login");
       axios
         .delete("http://localhost/member/deleteRefToken", {
-          headers: {
-            Authorization: `Bearer ${auth.accessToken}`,
-          },
           data: {
             username: auth.username,
+            // 필터에서 권한 검사 안해도 헤더에 Authorization 있으면 권한검사 수행
           },
         })
-        .then(() => {
-          logout();
-          alert("로그아웃 되었습니다.");
-          goTo("/login");
-        })
-        .catch(() => {
-          alert("오류 발생! 다시 시도해주세요.");
+        .catch((error) => {
+          if (error.response && error.response.status == 401) {
+            console.log(error.response);
+          } else {
+            console.log("다른오류");
+          }
         });
-
-      // logout();
-
-      // alert("로그아웃 되었습니다.");
-      // goTo("/login");
     }
   };
 
