@@ -45,6 +45,7 @@ const AdMember = () => {
       })
       .then((response) => {
         setMembers([...response.data]);
+        console.log(1);
       })
       .catch(() => {
         setError(0);
@@ -67,6 +68,7 @@ const AdMember = () => {
       nextBtnRef.current.disabled = false;
       finalBtnRef.current.disabled = false;
     }
+    console.log(2);
   }, [members]);
 
   useEffect(() => {
@@ -85,6 +87,7 @@ const AdMember = () => {
       })
       .then((response) => {
         setMembers([...response.data]);
+        console.log(3);
       })
       .catch(() => {
         setError(0);
