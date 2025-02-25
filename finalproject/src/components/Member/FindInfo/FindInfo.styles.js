@@ -54,3 +54,6 @@ export const StyledSpace = styled.div`
     height: 100px;
     min-height: 100px;
 `;
+export const Timer = styled.p`
+  color: red;
+`;

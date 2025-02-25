@@ -17,43 +17,43 @@ import FindPwd from "./components/Member/FindInfo/FindPwd";
 import axios from "axios";
 
 function App() {
-  const [response, setResponse] = useState("");
-  const auth = useContext(AuthProvider);
+  // const [response, setResponse] = useState("");
+  // const auth = useContext(AuthProvider);
 
-  useEffect(() => {
-    const token = localStorage.getItem("refreshToken");
-    axios.interceptors.response.use(
-      async (response) => {
-        const e = await axios.post(
-          "http://localhost/member/refresh",
-          token,
-          null
-        );
-        return response;
-      },
-      async (error) => {
-        if (error.response.status === 401) {
-          const run = async () => {
-            const response = await axios
-              .post("http://localhost/member/refresh", token, null)
-              .then((response) => {
-                localStorage.setItem("username", response.data.username);
-                localStorage.setItem("accessToken", response.data.accessToken);
-                localStorage.setItem(
-                  "refreshToken",
-                  response.data.refreshToken
-                );
-                localStorage.setItem("role", response.data.role);
-              });
-          };
-          run();
-        } else {
-          console.error("서버 오류 발생: ", error.response.data);
-        }
-        return Promise.reject(error);
-      }
-    );
-  }, [response]);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("refreshToken");
+  //   axios.interceptors.response.use(
+  //     async (response) => {
+  //       const e = await axios.post(
+  //         "http://localhost/member/refresh",
+  //         token,
+  //         null
+  //       );
+  //       return response;
+  //     },
+  //     async (error) => {
+  //       if (error.response.status === 401) {
+  //         const run = async () => {
+  //           const response = await axios
+  //             .post("http://localhost/member/refresh", token, null)
+  //             .then((response) => {
+  //               localStorage.setItem("username", response.data.username);
+  //               localStorage.setItem("accessToken", response.data.accessToken);
+  //               localStorage.setItem(
+  //                 "refreshToken",
+  //                 response.data.refreshToken
+  //               );
+  //               localStorage.setItem("role", response.data.role);
+  //             });
+  //         };
+  //         run();
+  //       } else {
+  //         console.error("서버 오류 발생: ", error.response.data);
+  //       }
+  //       return Promise.reject(error);
+  //     }
+  //   );
+  // }, [response]);
 
   return (
     <div className="App">

@@ -36,7 +36,7 @@ const Login = () => {
       .then((response) => {
         const { username, tokens, role } = response.data;
         login(username, tokens.accessToken, tokens.refreshToken, role);
-        alert("로그인 성공!");
+        alert(response.data);
         window.location = "/";
       })
       .catch(() => {
