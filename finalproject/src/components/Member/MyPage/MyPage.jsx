@@ -29,9 +29,9 @@ const MyPage = () => {
           <StyledP>
             '<StyledSpan>{auth.username}</StyledSpan>'님 안녕하세요
           </StyledP>
-          <Btn>내가 만든 리스트</Btn>
+          <Btn>내가 만든 리스트(X)</Btn>
           <Btn onClick={() => goTo("/updateInfo")}>정보 수정</Btn>
-          <Btn>회원 탈퇴</Btn>
+          <Btn>회원 탈퇴(X)</Btn>
         </CommonContainer>
       </StyledDiv>
     </>

@@ -68,6 +68,7 @@ const FindPwd = () => {
         randomNum: randomNum,
       })
       .then((response) => {
+        setTimer(9999);
         setIsSuccess(2);
         alert(response.data);
       })
