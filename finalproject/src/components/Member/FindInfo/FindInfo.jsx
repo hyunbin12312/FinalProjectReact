@@ -28,8 +28,8 @@ const FindInfo = () => {
       .then((response) => {
         alert("ID: " + response.data);
       })
-      .catch(() => {
-        alert("없는 정보 입니다.");
+      .catch((error) => {
+        alert(error.response.data);
       });
   };
 

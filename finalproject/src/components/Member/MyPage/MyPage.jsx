@@ -31,7 +31,7 @@ const MyPage = () => {
           </StyledP>
           <Btn onClick={() => goTo("/map/list")}>내가 만든 리스트</Btn>
           <Btn onClick={() => goTo("/updateInfo")}>정보 수정</Btn>
-          <Btn>회원 탈퇴</Btn>
+          <Btn>회원 탈퇴(X)</Btn>
         </CommonContainer>
       </StyledDiv>
     </>
