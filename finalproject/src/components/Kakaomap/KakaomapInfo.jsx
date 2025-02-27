@@ -16,85 +16,16 @@ import SelectedList from "./kakaoComponents/SelectedList";
 import CategoryTabs from "./categoryTab/CategoryTabs";
 import { transformPlaces } from "./kakaoFunction/transformPlaces";
 
-// 전체 콘텐츠를 좌우로 배치하는 Flex 컨테이너
-const ContentContainer = styled.div`
-  display: flex;
-  gap: 10px;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-`;
-
-// 왼쪽 컬럼: 검색창, 버튼, PlaceList, "더보기" 버튼
-const LeftContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 1;
-  max-width: 400px;
-`;
-
-// CenterContainer: 선택된 장소 목록과 Submit 버튼을 보여주는 영역 (PlaceList와 Map 사이)
-const CenterContainer = styled.div`
-  flex: 1;
-  min-width: 300px;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
-
-// 오른쪽 컬럼: 지도 영역
-const RightContainer = styled.div`
-  flex: 1;
-  min-width: 300px;
-  max-width: 600px;
-`;
-
-// 검색창과 초기화 버튼을 같이 배치하는 컨테이너
-const SearchAndButtonsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-`;
-
-// 버튼 스타일 (흰색 베이스)
-const StyledButton = styled.button`
-  padding: 10px 16px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  color: #333;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-
-  &:hover {
-    background-color: #f7f7f7;
-    border-color: #ccc;
-  }
-
-  &:disabled {
-    background-color: #f7f7f7;
-    border-color: #eee;
-    color: #999;
-    cursor: default;
-  }
-`;
-
-// "더보기" 버튼을 감싸는 컨테이너 (PlaceList 아래쪽)
-const LoadMoreContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-`;
-
-// Submit 버튼 스타일 (CenterContainer 내부에 위치)
-const SubmitButton = styled(StyledButton)`
-  margin-top: 10px;
-  width: 100%;
-`;
+import {
+  ContentContainer,
+  LeftContainer,
+  CenterContainer,
+  RightContainer,
+  SearchAndButtonsContainer,
+  StyledButton,
+  LoadMoreContainer,
+  SubmitButton,
+} from "./KakaomapInfoStyled";
 
 function KakaoMapInfo() {
   useKakaoLoader();
@@ -399,15 +330,6 @@ function KakaoMapInfo() {
             </Map>
           </RightContainer>
         </ContentContainer>
-        <p>{clickPlace}</p>
-      </div>
-      <div style={{ marginTop: "20px" }}>
-        <h3>선택된 장소들:</h3>
-        <ul>
-          {selectedPlaces.map((place, index) => (
-            <li key={index}>{place.name}</li>
-          ))}
-        </ul>
       </div>
     </>
   );

@@ -13,6 +13,7 @@ import {
   EditButton,
   DeleteButton,
   AddMemoButton,
+  ReturnContainer,
 } from "./ViewMyPlanStyles";
 import CustomModal from "./CustomModal";
 import SearchTab from "../kakaoComponents/SearchTab";
@@ -121,7 +122,7 @@ const ViewMyPlan = () => {
         ),
       }));
 
-      // 백엔드 삭제 요청 예시
+      // 백엔드에 삭제요청
       axios
         .delete("http://localhost/map/delete/place", {
           data: { userId: auth.username, planCode, planOrder: place.planOrder },
@@ -157,7 +158,7 @@ const ViewMyPlan = () => {
         })
         .then((response) => {
           console.log("삭제 성공:", response.data);
-          alert("장소가 성공적으로 삭제되었습니다.");
+          alert("성공적으로 삭제되었습니다.");
           window.location.reload();
         })
         .catch((err) => {
@@ -175,7 +176,7 @@ const ViewMyPlan = () => {
       return;
     }
 
-    // 초기화: 이전 검색 결과, 페이지 번호, 마지막 페이지 여부 등을 초기화합니다.
+    // 이전 검색 결과, 페이지 번호, 마지막 페이지 여부 등을 초기화.
     setEditSearchResults([]);
     setEditPage(1);
     setEditIsEnd(false);
@@ -213,7 +214,7 @@ const ViewMyPlan = () => {
     }
   };
 
-  // 수정 모달 내 검색 리셋 (예: 초기화 버튼 클릭 시)
+  // 초기화 버튼 눌렀을때 초기화 되는것들
   const handleEditReset = () => {
     setEditInput("");
     setEditSearchResults([]);
@@ -221,7 +222,7 @@ const ViewMyPlan = () => {
     setEditIsEnd(false);
   };
 
-  // 검색 결과 항목 클릭 시, 해당 정보를 수정 폼에 반영
+  // 검색 결과 항목 클릭했을 때 해당 정보를 수정 폼에 반영
   const handleSelectSearchResult = (result) => {
     setEditForm((prev) => ({
       ...prev,
@@ -259,7 +260,7 @@ const ViewMyPlan = () => {
         "http://localhost/map",
         {
           userId: auth.username,
-          // 전개연산자 ... 를 사용해서 코드 단축
+          // 전개연산자사용, 코드단축
           ...editForm,
         },
         {
@@ -280,16 +281,16 @@ const ViewMyPlan = () => {
   };
 
   if (loading) {
-    return <Container>Loading...</Container>;
+    return <ReturnContainer>로딩중입니다 . . .</ReturnContainer>;
   }
 
   if (error) {
-    return <Container>Error: {error.message}</Container>;
+    return <ReturnContainer>Error: {error.message}</ReturnContainer>;
   }
 
   return (
     <Container>
-      <h1>내 여행 플랜</h1>
+      <h1 style={{ margin: "auto" }}>내 여행 플랜</h1>
       {Object.keys(groupedPlans).length === 0 ? (
         <p>저장된 여행 플랜이 없습니다.</p>
       ) : (
@@ -333,7 +334,6 @@ const ViewMyPlan = () => {
                       >
                         수정하기
                       </EditButton>
-                      <AddMemoButton>메모작성</AddMemoButton>
 
                       <DeleteButton
                         onClick={() => handleDeletePlace(place, planCode)}
@@ -353,7 +353,7 @@ const ViewMyPlan = () => {
                 }}
               >
                 <DeleteButton onClick={() => handleDeletePlan(planCode)}>
-                  삭제하기
+                  플랜삭제하기
                 </DeleteButton>
               </div>
             </PlanGroupContainer>

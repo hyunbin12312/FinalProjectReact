@@ -8,6 +8,15 @@ export const Container = styled.div`
   padding: 0 16px;
 `;
 
+export const ReturnContainer = styled.div`
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: center;
+  margin-top: 300px;
+  padding: 0 16px;
+`;
+
 /* 플랜 그룹들을 3열 그리드로 배치하기 위한 컨테이너 */
 export const PlanGrid = styled.div`
   display: grid;
