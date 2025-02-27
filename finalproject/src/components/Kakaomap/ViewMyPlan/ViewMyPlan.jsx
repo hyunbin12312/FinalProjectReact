@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 import { Map, MapMarker, ZoomControl } from "react-kakao-maps-sdk";
 import axios from "axios";
 import {
@@ -11,6 +12,7 @@ import {
   PlaceInfo,
   EditButton,
   DeleteButton,
+  AddMemoButton,
 } from "./ViewMyPlanStyles";
 import CustomModal from "./CustomModal";
 import SearchTab from "../kakaoComponents/SearchTab";
@@ -25,13 +27,12 @@ import SearchTab from "../kakaoComponents/SearchTab";
 */
 
 const ViewMyPlan = () => {
+  const { auth } = useContext(AuthContext);
+
   // 백엔드에서 그룹화된 플랜 데이터를 저장 (Map 형태: { [planCode]: TravelPlanDTO[] })
   const [groupedPlans, setGroupedPlans] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // 예시로 user01
-  const userId = "user01";
 
   // 각 그룹의 열림/닫힘 상태
   const [openGroups, setOpenGroups] = useState({});
@@ -58,8 +59,14 @@ const ViewMyPlan = () => {
 
   // 여행플랜을 불러오는 useEffect
   useEffect(() => {
+    if (!auth.accessToken) return; // accessToken 없으면 돌려보냄
     axios
-      .get("http://localhost/map/list", { params: { userId } })
+      .get("http://localhost/map/list", {
+        params: { userId: auth.username },
+        headers: {
+          Authorization: `Bearer ${auth.accessToken}`,
+        },
+      })
       .then((response) => {
         setGroupedPlans(response.data);
         setLoading(false);
@@ -69,7 +76,7 @@ const ViewMyPlan = () => {
         setError(err);
         setLoading(false);
       });
-  }, [userId]);
+  }, [auth.username, auth.accessToken]);
 
   // 플랜이 열려있는지, 닫혀있는지 구분하는용도
   const toggleGroup = (planCode) => {
@@ -104,8 +111,8 @@ const ViewMyPlan = () => {
     setModalOpen(true);
   };
 
-  // 삭제 버튼 클릭 시 처리 (해당 그룹에서 해당 planOrder를 가진 장소 제거)
-  const handleDeleteClick = (place, planCode) => {
+  // 장소삭제버튼
+  const handleDeletePlace = (place, planCode) => {
     if (window.confirm("해당 장소를 삭제하시겠습니까?")) {
       setGroupedPlans((prevPlans) => ({
         ...prevPlans,
@@ -116,8 +123,11 @@ const ViewMyPlan = () => {
 
       // 백엔드 삭제 요청 예시
       axios
-        .delete("http://localhost/map", {
-          data: { userId, planCode, planOrder: place.planOrder },
+        .delete("http://localhost/map/delete/place", {
+          data: { userId: auth.username, planCode, planOrder: place.planOrder },
+          headers: {
+            Authorization: `Bearer ${auth.accessToken}`,
+          },
         })
         .then((response) => {
           console.log("삭제 성공:", response.data);
@@ -133,6 +143,28 @@ const ViewMyPlan = () => {
   const closeModal = () => {
     setModalOpen(false);
     setSelectedPlace(null);
+  };
+
+  // 플랜삭제버튼
+  const handleDeletePlan = (planCode) => {
+    if (window.confirm("여행플랜을 삭제하시겠습니까?")) {
+      axios
+        .delete("http://localhost/map/delete/plan", {
+          data: { userId: auth.username, planCode },
+          headers: {
+            Authorization: `Bearer ${auth.accessToken}`,
+          },
+        })
+        .then((response) => {
+          console.log("삭제 성공:", response.data);
+          alert("장소가 성공적으로 삭제되었습니다.");
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.error("삭제 에러:", err);
+          alert("삭제 중 오류가 발생했습니다.");
+        });
+    }
   };
 
   // 장소를 찾는 함수, SearchPlaces와 비슷하게 작동한다.
@@ -223,14 +255,23 @@ const ViewMyPlan = () => {
 
     // 백엔드 PUT요청
     axios
-      .put("http://localhost/map", {
-        userId,
-        // 전개연산자 ... 를 사용해서 코드 단축
-        ...editForm,
-      })
+      .put(
+        "http://localhost/map",
+        {
+          userId: auth.username,
+          // 전개연산자 ... 를 사용해서 코드 단축
+          ...editForm,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${auth.accessToken}`,
+          },
+        }
+      )
       .then((response) => {
         console.log("수정 성공:", response.data);
         closeModal();
+        alert("장소 수정에 성공했습니다.");
       })
       .catch((err) => {
         console.error("수정 에러:", err);
@@ -292,8 +333,10 @@ const ViewMyPlan = () => {
                       >
                         수정하기
                       </EditButton>
+                      <AddMemoButton>메모작성</AddMemoButton>
+
                       <DeleteButton
-                        onClick={() => handleDeleteClick(place, planCode)}
+                        onClick={() => handleDeletePlace(place, planCode)}
                       >
                         삭제하기
                       </DeleteButton>
@@ -301,6 +344,18 @@ const ViewMyPlan = () => {
                   </PlaceItem>
                 ))}
               </PlanContent>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "10px",
+                  marginBottom: "10px",
+                }}
+              >
+                <DeleteButton onClick={() => handleDeletePlan(planCode)}>
+                  삭제하기
+                </DeleteButton>
+              </div>
             </PlanGroupContainer>
           ))}
         </PlanGrid>
